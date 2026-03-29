@@ -5,7 +5,7 @@ const PROJECTS = [
     tag: 'Full-Stack',
     name: 'POS System',
     desc: 'Real-time restaurant ordering system with QR menus, multi-language support (MK/SQ/EN), live order tracking, and waiter dashboard.',
-    badges: ['React', 'Supabase', 'Tailwind', 'Realtime'],
+    badges: ['React', 'Supabase', 'Tailwind', 'Realtime', 'Cloudflare Workers', 'Hono'],
     href: null,
   },
   {
@@ -13,7 +13,7 @@ const PROJECTS = [
     tag: 'Collaborative',
     name: 'National Bank of NMK — Web App',
     desc: 'Collaborated in a team on a web-based application. Focused on backend architecture — repository layers, service layers, routing, and validation logic.',
-    badges: ['React', 'Team Project'],
+    badges: ['C#', '.NET', 'Team Project'],
     href: 'https://sporedi.nbrm.mk',
   },
 ]

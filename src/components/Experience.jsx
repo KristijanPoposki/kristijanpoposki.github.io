@@ -2,7 +2,7 @@
 const EXPERIENCE = [
   {
     id: 'nbrm',
-    role: 'Full-Stack Developer',
+    role: 'Back-End Developer',
     company: 'National Bank of the Republic of North Macedonia',
     type: 'Collaborative Project',
     desc: 'Worked on backend architecture — implemented repository and service layers, handled routing, built validation logic, and participated in debugging and code reviews across the full stack.',
