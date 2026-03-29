@@ -14,7 +14,7 @@ import Contact from './components/Contact'
 export default function App() {
   const lenisRef = useLenis()
   useAnimations()
-  const [activeSection, setActiveSection] = useState('home')
+  const [activeSection, setActiveSection] = useState('about')
 
   useEffect(() => {
     const sections = ['home', 'about', 'skills', 'projects', 'experience', 'contact']
