@@ -17,22 +17,30 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('about')
 
   useEffect(() => {
-    const sections = ['home', 'about', 'skills', 'projects', 'experience', 'contact']
+    const sections = ['about', 'skills', 'projects', 'experience', 'contact']
 
-    const triggers = sections.map((id, i) => {
+    const triggers = sections.map(id => {
       const el = document.getElementById(id)
       if (!el) return null
-      const isLast = i === sections.length - 1
       return ScrollTrigger.create({
         trigger: el,
-        start: isLast ? 'top 85%' : 'top 50%',
-        end: isLast ? 'bottom bottom' : 'bottom 50%',
+        start: 'top 50%',
+        end: 'bottom 50%',
         onEnter: () => setActiveSection(id),
         onEnterBack: () => setActiveSection(id),
       })
     }).filter(Boolean)
 
-    return () => triggers.forEach(t => t.kill())
+    function onScroll() {
+      const atBottom = window.scrollY + window.innerHeight >= document.body.scrollHeight - 80
+      if (atBottom) setActiveSection('contact')
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      triggers.forEach(t => t.kill())
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   function handleNavClick(href) {
