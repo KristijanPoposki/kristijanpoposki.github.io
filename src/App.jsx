@@ -19,13 +19,14 @@ export default function App() {
   useEffect(() => {
     const sections = ['home', 'about', 'skills', 'projects', 'experience', 'contact']
 
-    const triggers = sections.map(id => {
+    const triggers = sections.map((id, i) => {
       const el = document.getElementById(id)
       if (!el) return null
+      const isLast = i === sections.length - 1
       return ScrollTrigger.create({
         trigger: el,
-        start: 'top 50%',
-        end: 'bottom 50%',
+        start: isLast ? 'top 85%' : 'top 50%',
+        end: isLast ? 'bottom bottom' : 'bottom 50%',
         onEnter: () => setActiveSection(id),
         onEnterBack: () => setActiveSection(id),
       })
