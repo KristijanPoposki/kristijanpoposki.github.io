@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#94C761" />
+  <meta name="theme-color" content="#F4F8EE" />
   <title>QR Waiter Test</title>
   <style>
     :root {
@@ -3581,6 +3581,19 @@
       background: #FFFFFF !important;
     }
 
+  
+    /* Mobile installed-PWA edge cleanup */
+    html,
+    body {
+      background: #F4F8EE !important;
+    }
+
+    .bottom-nav {
+      bottom: -1px !important;
+      min-height: calc(77px + env(safe-area-inset-bottom)) !important;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    }
+
   </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
@@ -4546,4 +4559,3 @@
 
 </body>
 </html>
-
