@@ -4,13 +4,12 @@
   "description": "Testing PWA for the QR Order waiter interface",
   "start_url": "./",
   "scope": "./",
-  "display": "fullscreen",
+  "display": "standalone",
   "display_override": [
-    "fullscreen",
     "standalone"
   ],
-  "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF",
+  "background_color": "#F4F8EE",
+  "theme_color": "#F4F8EE",
   "icons": [
     {
       "src": "./icon-192.png",
