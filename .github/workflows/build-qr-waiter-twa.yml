@@ -12,11 +12,11 @@ on:
       version_code:
         description: Android version code
         required: true
-        default: "2"
+        default: "3"
       version_name:
         description: Android version name
         required: true
-        default: "1.1-test"
+        default: "1.2-test"
 
 permissions:
   contents: read
@@ -111,8 +111,8 @@ jobs:
                   applicationId 'com.kristijanpoposki.qrwaitertest'
                   minSdk 23
                   targetSdk 35
-                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '2')
-                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.1-test'
+                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '3')
+                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.2-test'
               }
 
               signingConfigs {
@@ -139,8 +139,8 @@ jobs:
           <resources>
               <color name="app_background">#F4F8EE</color>
               <color name="status_bar">#F4F8EE</color>
-              <color name="navigation_bar">#00000000</color>
-              <color name="navigation_bar_divider">#00000000</color>
+              <color name="navigation_bar">#FFFFFF</color>
+              <color name="navigation_bar_divider">#FFFFFF</color>
           </resources>
           EOF
 
@@ -241,14 +241,20 @@ jobs:
                   });
 
                   setContentView(webView);
+                  installInsetsControlListener();
                   scheduleFullscreen();
                   webView.loadUrl(APP_URL);
               }
 
               private void configureWindow() {
                   Window window = getWindow();
+                  window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                  window.addFlags(
+                          WindowManager.LayoutParams.FLAG_FULLSCREEN
+                                  | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                                  | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                   window.setStatusBarColor(Color.TRANSPARENT);
-                  window.setNavigationBarColor(Color.TRANSPARENT);
+                  window.setNavigationBarColor(Color.WHITE);
 
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                       window.setStatusBarContrastEnforced(false);
@@ -269,7 +275,25 @@ jobs:
                       window.setDecorFitsSystemWindows(false);
                   }
 
+                  applyLegacyFullscreenFlags();
                   hideSystemBars();
+              }
+
+              private void installInsetsControlListener() {
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                      WindowInsetsController controller =
+                              getWindow().getDecorView().getWindowInsetsController();
+                      if (controller != null) {
+                          controller.addOnControllableInsetsChangedListener(
+                                  (insetsController, controllableTypes) -> {
+                                      if ((controllableTypes & WindowInsets.Type.systemBars()) != 0) {
+                                          applyModernFullscreen(insetsController);
+                                      }
+                                  });
+                      } else {
+                          getWindow().getDecorView().post(this::installInsetsControlListener);
+                      }
+                  }
               }
 
               private void scheduleFullscreen() {
@@ -284,23 +308,40 @@ jobs:
                   Window window = getWindow();
                   View decor = window.getDecorView();
 
+                  applyLegacyFullscreenFlags();
+
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                       WindowInsetsController controller = decor.getWindowInsetsController();
                       if (controller != null) {
-                          controller.setSystemBarsBehavior(
-                                  WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                          controller.hide(WindowInsets.Type.systemBars());
+                          applyModernFullscreen(controller);
                       }
                       return;
                   }
+              }
 
-                  decor.setSystemUiVisibility(
+              private void applyLegacyFullscreenFlags() {
+                  int fullscreenFlags =
                           View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                                   | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                   | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                   | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                   | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                  | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+
+                  getWindow().getDecorView().setSystemUiVisibility(fullscreenFlags);
+                  if (webView != null) webView.setSystemUiVisibility(fullscreenFlags);
+              }
+
+              private void applyModernFullscreen(WindowInsetsController controller) {
+                  controller.setSystemBarsBehavior(
+                          WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                  controller.setSystemBarsAppearance(
+                          WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                          WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+                  controller.hide(WindowInsets.Type.systemBars());
               }
 
               @Override
@@ -361,6 +402,7 @@ jobs:
                       android:alwaysRetainTaskState="true"
                       android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
                       android:exported="true"
+                      android:immersive="true"
                       android:label="@string/app_name"
                       android:theme="@style/LauncherActivityTheme"
                       android:windowSoftInputMode="adjustResize">
