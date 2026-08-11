@@ -12,11 +12,11 @@ on:
       version_code:
         description: Android version code
         required: true
-        default: "3"
+        default: "4"
       version_name:
         description: Android version name
         required: true
-        default: "1.2-test"
+        default: "1.3-test"
 
 permissions:
   contents: read
@@ -111,8 +111,8 @@ jobs:
                   applicationId 'com.kristijanpoposki.qrwaitertest'
                   minSdk 23
                   targetSdk 35
-                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '3')
-                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.2-test'
+                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '4')
+                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.3-test'
               }
 
               signingConfigs {
@@ -147,8 +147,8 @@ jobs:
           cat > app/src/main/res/values/strings.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <string name="app_name">QR Waiter Test</string>
-              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/?source=android</string>
+              <string name="app_name">QR Waiter Fullscreen v4</string>
+              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/?source=android&amp;wrapper=4</string>
               <string name="asset_statements" translatable="false">[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"web","site":"https://kristijanpoposki.github.io"}}]</string>
           </resources>
           EOF
@@ -199,7 +199,7 @@ jobs:
           public final class LauncherActivity extends Activity {
               private static final String APP_HOST = "kristijanpoposki.github.io";
               private static final String APP_URL =
-                      "https://kristijanpoposki.github.io/qr-waiter-test/?source=android";
+                      "https://kristijanpoposki.github.io/qr-waiter-test/?source=android&wrapper=4";
 
               private final Handler fullscreenHandler = new Handler(Looper.getMainLooper());
               private final Runnable fullscreenRunnable = this::hideSystemBars;
@@ -237,6 +237,7 @@ jobs:
                       @Override
                       public void onPageFinished(WebView view, String url) {
                           scheduleFullscreen();
+                          installDiagnosticBadge(view);
                       }
                   });
 
@@ -244,6 +245,26 @@ jobs:
                   installInsetsControlListener();
                   scheduleFullscreen();
                   webView.loadUrl(APP_URL);
+              }
+
+              private void installDiagnosticBadge(WebView view) {
+                  view.evaluateJavascript(
+                          "(function(){"
+                                  + "var old=document.getElementById('native-v4-badge');"
+                                  + "if(old)old.remove();"
+                                  + "var badge=document.createElement('div');"
+                                  + "badge.id='native-v4-badge';"
+                                  + "badge.style.cssText='position:fixed;top:4px;right:4px;z-index:2147483647;"
+                                  + "padding:5px 7px;border-radius:8px;background:#111;color:#fff;"
+                                  + "font:700 10px/1.25 sans-serif;pointer-events:none;white-space:pre;';"
+                                  + "function update(){var vv=window.visualViewport;"
+                                  + "badge.textContent='NATIVE V4\\ninner '+innerWidth+'x'+innerHeight"
+                                  + "+(vv?' | vv '+Math.round(vv.width)+'x'+Math.round(vv.height):'');}"
+                                  + "document.body.appendChild(badge);update();"
+                                  + "window.addEventListener('resize',update);"
+                                  + "if(window.visualViewport)visualViewport.addEventListener('resize',update);"
+                                  + "})();",
+                          null);
               }
 
               private void configureWindow() {
