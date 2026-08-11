@@ -5982,6 +5982,41 @@
 </script>
 
 <script>
+  /* Chromium/WebAPK can launch a manifest-fullscreen PWA with the camera
+     cutout letterboxed in black. A user-activated Fullscreen API request
+     makes Chromium re-apply viewport-fit=cover using short-edge cutout mode. */
+  (() => {
+    const installedApp =
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    if (!installedApp || !document.documentElement.requestFullscreen) return;
+
+    const stopListening = () => {
+      document.removeEventListener('click', enterCutoutFullscreen, true);
+      document.removeEventListener('keydown', enterCutoutFullscreen, true);
+    };
+
+    const enterCutoutFullscreen = () => {
+      if (document.fullscreenElement) {
+        stopListening();
+        return;
+      }
+
+      document.documentElement.requestFullscreen()
+        .then(stopListening)
+        .catch(() => {
+          /* Keep listening so a later user gesture can retry. */
+        });
+    };
+
+    document.addEventListener('click', enterCutoutFullscreen, true);
+    document.addEventListener('keydown', enterCutoutFullscreen, true);
+  })();
+</script>
+
+<script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(console.error);
