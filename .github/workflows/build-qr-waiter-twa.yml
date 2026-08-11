@@ -1,4 +1,4 @@
-name: Build QR Waiter TWA APK
+name: Build QR Waiter Fullscreen APK
 
 on:
   push:
@@ -12,11 +12,11 @@ on:
       version_code:
         description: Android version code
         required: true
-        default: "1"
+        default: "2"
       version_name:
         description: Android version name
         required: true
-        default: "1.0-test"
+        default: "1.1-test"
 
 permissions:
   contents: read
@@ -55,7 +55,7 @@ jobs:
             exit 1
           fi
 
-      - name: Create Android TWA project
+      - name: Create fullscreen Android project
         shell: bash
         run: |
           set -euo pipefail
@@ -111,8 +111,8 @@ jobs:
                   applicationId 'com.kristijanpoposki.qrwaitertest'
                   minSdk 23
                   targetSdk 35
-                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '1')
-                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.0-test'
+                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '2')
+                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.1-test'
               }
 
               signingConfigs {
@@ -131,17 +131,16 @@ jobs:
               }
           }
 
-          dependencies {
-              implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.1'
-          }
+          dependencies {}
           EOF
 
           cat > app/src/main/res/values/colors.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
+              <color name="app_background">#F4F8EE</color>
               <color name="status_bar">#F4F8EE</color>
-              <color name="navigation_bar">#FFFFFF</color>
-              <color name="navigation_bar_divider">#FFFFFF</color>
+              <color name="navigation_bar">#00000000</color>
+              <color name="navigation_bar_divider">#00000000</color>
           </resources>
           EOF
 
@@ -149,7 +148,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <string name="app_name">QR Waiter Test</string>
-              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/?source=twa</string>
+              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/?source=android</string>
               <string name="asset_statements" translatable="false">[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"web","site":"https://kristijanpoposki.github.io"}}]</string>
           </resources>
           EOF
@@ -158,14 +157,19 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <style name="LauncherActivityTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-                  <item name="android:windowIsTranslucent">true</item>
-                  <item name="android:windowBackground">@android:color/transparent</item>
-                  <item name="android:statusBarColor">@color/status_bar</item>
+                  <item name="android:windowIsTranslucent">false</item>
+                  <item name="android:windowBackground">@color/app_background</item>
+                  <item name="android:windowFullscreen">true</item>
+                  <item name="android:windowNoTitle">true</item>
+                  <item name="android:windowActionModeOverlay">true</item>
+                  <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
                   <item name="android:navigationBarColor">@color/navigation_bar</item>
                   <item name="android:navigationBarDividerColor">@color/navigation_bar_divider</item>
                   <item name="android:windowLightStatusBar">true</item>
                   <item name="android:windowLightNavigationBar">true</item>
                   <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+                  <item name="android:windowDisablePreview">false</item>
                   <item name="android:backgroundDimEnabled">false</item>
               </style>
           </resources>
@@ -174,20 +178,160 @@ jobs:
           cat > app/src/main/java/com/kristijanpoposki/qrwaitertest/LauncherActivity.java <<'EOF'
           package com.kristijanpoposki.qrwaitertest;
 
+          import android.app.Activity;
+          import android.content.Intent;
+          import android.graphics.Color;
+          import android.net.Uri;
           import android.os.Build;
+          import android.os.Bundle;
+          import android.os.Handler;
+          import android.os.Looper;
+          import android.view.View;
+          import android.view.Window;
+          import android.view.WindowInsets;
+          import android.view.WindowInsetsController;
           import android.view.WindowManager;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
 
-          import androidx.browser.trusted.TrustedWebActivityDisplayMode;
+          public final class LauncherActivity extends Activity {
+              private static final String APP_HOST = "kristijanpoposki.github.io";
+              private static final String APP_URL =
+                      "https://kristijanpoposki.github.io/qr-waiter-test/?source=android";
 
-          public final class LauncherActivity
-                  extends com.google.androidbrowserhelper.trusted.LauncherActivity {
+              private final Handler fullscreenHandler = new Handler(Looper.getMainLooper());
+              private final Runnable fullscreenRunnable = this::hideSystemBars;
+              private WebView webView;
+
               @Override
-              protected TrustedWebActivityDisplayMode getDisplayMode() {
-                  final int cutoutMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                          ? WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-                          : WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  configureWindow();
 
-                  return new TrustedWebActivityDisplayMode.ImmersiveMode(true, cutoutMode);
+                  webView = new WebView(this);
+                  webView.setBackgroundColor(Color.rgb(244, 248, 238));
+
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+                  settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+                  webView.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(
+                              WebView view, WebResourceRequest request) {
+                          Uri uri = request.getUrl();
+                          if ("https".equalsIgnoreCase(uri.getScheme())
+                                  && APP_HOST.equalsIgnoreCase(uri.getHost())) {
+                              return false;
+                          }
+
+                          startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                          return true;
+                      }
+
+                      @Override
+                      public void onPageFinished(WebView view, String url) {
+                          scheduleFullscreen();
+                      }
+                  });
+
+                  setContentView(webView);
+                  scheduleFullscreen();
+                  webView.loadUrl(APP_URL);
+              }
+
+              private void configureWindow() {
+                  Window window = getWindow();
+                  window.setStatusBarColor(Color.TRANSPARENT);
+                  window.setNavigationBarColor(Color.TRANSPARENT);
+
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                      window.setStatusBarContrastEnforced(false);
+                      window.setNavigationBarContrastEnforced(false);
+                  }
+
+                  WindowManager.LayoutParams attributes = window.getAttributes();
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                      attributes.layoutInDisplayCutoutMode =
+                              WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+                  } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                      attributes.layoutInDisplayCutoutMode =
+                              WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                  }
+                  window.setAttributes(attributes);
+
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                      window.setDecorFitsSystemWindows(false);
+                  }
+
+                  hideSystemBars();
+              }
+
+              private void scheduleFullscreen() {
+                  fullscreenHandler.removeCallbacks(fullscreenRunnable);
+                  fullscreenHandler.post(fullscreenRunnable);
+                  fullscreenHandler.postDelayed(fullscreenRunnable, 50);
+                  fullscreenHandler.postDelayed(fullscreenRunnable, 250);
+                  fullscreenHandler.postDelayed(fullscreenRunnable, 750);
+              }
+
+              private void hideSystemBars() {
+                  Window window = getWindow();
+                  View decor = window.getDecorView();
+
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                      WindowInsetsController controller = decor.getWindowInsetsController();
+                      if (controller != null) {
+                          controller.setSystemBarsBehavior(
+                                  WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                          controller.hide(WindowInsets.Type.systemBars());
+                      }
+                      return;
+                  }
+
+                  decor.setSystemUiVisibility(
+                          View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                  | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                  | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                  | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                  | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+              }
+
+              @Override
+              protected void onResume() {
+                  super.onResume();
+                  scheduleFullscreen();
+              }
+
+              @Override
+              public void onWindowFocusChanged(boolean hasFocus) {
+                  super.onWindowFocusChanged(hasFocus);
+                  if (hasFocus) scheduleFullscreen();
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+
+              @Override
+              protected void onDestroy() {
+                  fullscreenHandler.removeCallbacksAndMessages(null);
+                  if (webView != null) {
+                      webView.destroy();
+                      webView = null;
+                  }
+                  super.onDestroy();
               }
           }
           EOF
@@ -195,13 +339,18 @@ jobs:
           cat > app/src/main/AndroidManifest.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+
               <application
                   android:allowBackup="false"
+                  android:enableOnBackInvokedCallback="false"
+                  android:hardwareAccelerated="true"
                   android:icon="@drawable/ic_launcher"
                   android:label="@string/app_name"
                   android:roundIcon="@drawable/ic_launcher"
                   android:supportsRtl="true"
-                  android:theme="@style/LauncherActivityTheme">
+                  android:theme="@style/LauncherActivityTheme"
+                  android:usesCleartextTraffic="false">
 
                   <meta-data
                       android:name="asset_statements"
@@ -210,29 +359,11 @@ jobs:
                   <activity
                       android:name=".LauncherActivity"
                       android:alwaysRetainTaskState="true"
+                      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
                       android:exported="true"
                       android:label="@string/app_name"
-                      android:theme="@style/LauncherActivityTheme">
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.DEFAULT_URL"
-                          android:value="@string/launch_url" />
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
-                          android:resource="@color/status_bar" />
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK"
-                          android:resource="@color/status_bar" />
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR"
-                          android:resource="@color/navigation_bar" />
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR_DARK"
-                          android:resource="@color/navigation_bar" />
+                      android:theme="@style/LauncherActivityTheme"
+                      android:windowSoftInputMode="adjustResize">
 
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -290,7 +421,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: qr-waiter-twa-apk
+          name: qr-waiter-fullscreen-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14

@@ -5986,13 +5986,14 @@
      area with the app theme. On the first gesture, DOM fullscreen makes
      Chromium re-apply viewport-fit=cover using short-edge cutout mode. */
   (() => {
-    const nativeTwa = new URLSearchParams(window.location.search).get('source') === 'twa';
+    const nativeSource = new URLSearchParams(window.location.search).get('source');
+    const nativeWrapper = nativeSource === 'twa' || nativeSource === 'android';
     const installedApp =
       window.matchMedia('(display-mode: fullscreen)').matches ||
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true;
 
-    if (nativeTwa || !installedApp || !document.documentElement.requestFullscreen) return;
+    if (nativeWrapper || !installedApp || !document.documentElement.requestFullscreen) return;
 
     const stopListening = () => {
       document.removeEventListener('click', enterCutoutFullscreen, true);
