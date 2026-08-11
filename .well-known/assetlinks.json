@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kristijanpoposki.qrwaitertest",
+      "sha256_cert_fingerprints": [
+        "2A:4C:88:7E:D0:50:3A:68:FF:AD:FA:31:CE:FB:02:4D:AF:1D:7F:AD:F4:57:9F:11:DF:02:00:ED:31:A2:C2:82"
+      ]
+    }
+  }
+]

@@ -1,7 +1,16 @@
-name: Build QR Waiter APK
+name: Build QR Waiter TWA APK
 
 on:
   workflow_dispatch:
+    inputs:
+      version_code:
+        description: Android version code
+        required: true
+        default: "1"
+      version_name:
+        description: Android version name
+        required: true
+        default: "1.0-test"
 
 permissions:
   contents: read
@@ -18,12 +27,12 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Set up Gradle 8.13
         uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: '8.13'
+          gradle-version: "8.13"
           cache-provider: basic
 
       - name: Install Android SDK 36
@@ -32,14 +41,26 @@ jobs:
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
           sdkmanager "platforms;android-36" "build-tools;35.0.0"
 
+      - name: Validate signing secrets
+        shell: bash
+        env:
+          QR_WAITER_KEYSTORE_BASE64: ${{ secrets.QR_WAITER_KEYSTORE_BASE64 }}
+          QR_WAITER_KEY_PASSWORD: ${{ secrets.QR_WAITER_KEY_PASSWORD }}
+        run: |
+          if [[ -z "$QR_WAITER_KEYSTORE_BASE64" || -z "$QR_WAITER_KEY_PASSWORD" ]]; then
+            echo "QR Waiter signing secrets are missing."
+            exit 1
+          fi
+
       - name: Create Android TWA project
         shell: bash
         run: |
-          set -e
+          set -euo pipefail
 
+          mkdir -p app/src/main/java/com/kristijanpoposki/qrwaitertest
+          mkdir -p app/src/main/res/drawable
           mkdir -p app/src/main/res/values
-          mkdir -p app/src/main/res/mipmap-hdpi
-          mkdir -p app/src/main/res/mipmap-mdpi
+          cp qr-waiter-test/icon-512.png app/src/main/res/drawable/ic_launcher.png
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -87,16 +108,16 @@ jobs:
                   applicationId 'com.kristijanpoposki.qrwaitertest'
                   minSdk 23
                   targetSdk 35
-                  versionCode 1
-                  versionName '1.0-test'
+                  versionCode Integer.parseInt(System.getenv('QR_WAITER_VERSION_CODE') ?: '1')
+                  versionName System.getenv('QR_WAITER_VERSION_NAME') ?: '1.0-test'
               }
 
               signingConfigs {
                   testRelease {
-                      storeFile file('../qrwaiter-test.jks')
-                      storePassword 'qrwaitertest'
+                      storeFile file('../qrwaiter-test.p12')
+                      storePassword System.getenv('QR_WAITER_KEY_PASSWORD')
                       keyAlias 'qrwaiter'
-                      keyPassword 'qrwaitertest'
+                      keyPassword System.getenv('QR_WAITER_KEY_PASSWORD')
                   }
               }
 
@@ -117,6 +138,7 @@ jobs:
           <resources>
               <color name="status_bar">#F4F8EE</color>
               <color name="navigation_bar">#FFFFFF</color>
+              <color name="navigation_bar_divider">#FFFFFF</color>
           </resources>
           EOF
 
@@ -124,7 +146,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <string name="app_name">QR Waiter Test</string>
-              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/</string>
+              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/?source=twa</string>
+              <string name="asset_statements" translatable="false">[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"web","site":"https://kristijanpoposki.github.io"}}]</string>
           </resources>
           EOF
 
@@ -136,25 +159,53 @@ jobs:
                   <item name="android:windowBackground">@android:color/transparent</item>
                   <item name="android:statusBarColor">@color/status_bar</item>
                   <item name="android:navigationBarColor">@color/navigation_bar</item>
+                  <item name="android:navigationBarDividerColor">@color/navigation_bar_divider</item>
                   <item name="android:windowLightStatusBar">true</item>
                   <item name="android:windowLightNavigationBar">true</item>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
                   <item name="android:backgroundDimEnabled">false</item>
               </style>
           </resources>
           EOF
 
+          cat > app/src/main/java/com/kristijanpoposki/qrwaitertest/LauncherActivity.java <<'EOF'
+          package com.kristijanpoposki.qrwaitertest;
+
+          import android.os.Build;
+          import android.view.WindowManager;
+
+          import androidx.browser.trusted.TrustedWebActivityDisplayMode;
+
+          public final class LauncherActivity
+                  extends com.google.androidbrowserhelper.trusted.LauncherActivity {
+              @Override
+              protected TrustedWebActivityDisplayMode getDisplayMode() {
+                  final int cutoutMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                          ? WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                          : WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+
+                  return new TrustedWebActivityDisplayMode.ImmersiveMode(true, cutoutMode);
+              }
+          }
+          EOF
+
           cat > app/src/main/AndroidManifest.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
               <application
-                  android:allowBackup="true"
+                  android:allowBackup="false"
+                  android:icon="@drawable/ic_launcher"
                   android:label="@string/app_name"
+                  android:roundIcon="@drawable/ic_launcher"
                   android:supportsRtl="true"
                   android:theme="@style/LauncherActivityTheme">
 
+                  <meta-data
+                      android:name="asset_statements"
+                      android:resource="@string/asset_statements" />
+
                   <activity
-                      android:name="com.google.androidbrowserhelper.trusted.LauncherActivity"
+                      android:name=".LauncherActivity"
                       android:alwaysRetainTaskState="true"
                       android:exported="true"
                       android:label="@string/app_name"
@@ -163,10 +214,6 @@ jobs:
                       <meta-data
                           android:name="android.support.customtabs.trusted.DEFAULT_URL"
                           android:value="@string/launch_url" />
-
-                      <meta-data
-                          android:name="android.support.customtabs.trusted.DISPLAY_MODE"
-                          android:value="sticky-immersive" />
 
                       <meta-data
                           android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
@@ -198,20 +245,43 @@ jobs:
                               android:host="kristijanpoposki.github.io"
                               android:pathPrefix="/qr-waiter-test/" />
                       </intent-filter>
-
                   </activity>
               </application>
           </manifest>
           EOF
 
-          echo 'MIIKmAIBAzCCCkIGCSqGSIb3DQEHAaCCCjMEggovMIIKKzCCBbIGCSqGSIb3DQEHAaCCBaMEggWfMIIFmzCCBZcGCyqGSIb3DQEMCgECoIIFQDCCBTwwZgYJKoZIhvcNAQUNMFkwOAYJKoZIhvcNAQUMMCsEFIDnC+FOoe8XoiS30tmB9XGhtiOXAgInEAIBIDAMBggqhkiG9w0CCQUAMB0GCWCGSAFlAwQBKgQQDOnICUbyS8UKVEjmiL0upwSCBNA/FolxO2vDQB4Fo2b4CBf/rF8Sspn84k9H8b0ccJmBe9xcBOuRMF2iZp9e/Wmq+6JbaHI1/L397G928g1ftcUzwpzY5FTU8MMx8MgFnkiHwYJaRtXa9xt9IYinWH6YxCssggFx8ySRQlAtvVwagjSVZgnwqElM5Eq94iXrsIJS9QJmcE28sHgkmdWzCzSxKr9MCUVT9HSQh+WuCcm5vOF/7YSzy8FNZRo/6KtktfevE1JzFB2QKiUSujFQnm5FJpzMRmWxsX0cBfZpgwRZCawryUOnpif0cUXNZdgeH16uaN3jPVUDAJu6olOWRdcOyLeE1jxJKth9iLzjoYWnRCk2cjyO39vYyjFW01l/3m5Id3pP/AJu6ddjUzU1vgsTSKOXvuR06VobWS6HQ9AIP5I4Ekc8Ul59yBkZRK+XI8ktihGek0wph3pJ+l8bYCsyh7owFEICqgJsjYGHZsCCa5YLoj+1lSRLaLJW0ji/S/hTSQhsVxCSAG59WoD2oTH/saoU7hwjJHzg5yt3BLYTVzmo27BpfC2Vqisl4RlmqONg83bvMJ6lkRGJy3q2Gd723s5h6A8jEg10/8r1pCMFzAUSS6DUA4VufV1sRhKsSWy7FjsocB8jBC3sAPBqNPmtWlT3S7uOWTWtYuM5puyorFwwWWYd5xyKsz1o1RbkPYQBCi1FmqGPn3kMAr7GDtQVYPsWd6YNgBJIulPzvxRzyRgAFot8O8ninS1oREueOU0auHq7OzSpTSNKpo6/9moX35+g1Urvg6QC+9fklekrd0ON2F55LONA1eGYjlCf7etFZtfWl8EentkJ09KFT/JYNEhUx8+q1i+wAwoPFNReR6Tov7tpMFMBxHoghIbvK8jHPfWd0sJCg6/EnuQSTiZ7aB3pBVsWF0qUI7cOzOmpVoAj5r7NAxVDUfQoasdmebf4IIb4kpHsM3YelP7wExcLkt4vrtobMHiMcU0GbCPNkqO46yCqmnf99t1Aezoj+MpP0DKW2332/bkQRUhHJEYuVkVm1HF+9s8LXHfTcmm5XT4qHpEUztszoufm8Jqshsvtl+03EPoNy3AM7otWvRwLYupwOzyHMNU/FV/6c78aS/0IAEVj/vqRaRqrWIKKTJV6Xc6/V/fy0jNjzOxK3Pvl3z6/GQfpSlW8v8a237ElZZDbQzLir0Y/RviyZwD4vj0r5cM+jZMaRBOreKInSbfZfsgShRB4cwjbBItds73Bqn7ASmtrCqI7ml/7E+yGCLio/r2fBWmXKVKd5mSJQzfwdt9cJa+iIdSbdLoaFxDChlpOa/3o59nD+VTnwMGTWzFHOyE9cDzzsGugVxvVWFpotvctmi6ypWq4thQoRROQricjHqTc8dVv8dO+OU/WCrL4dNIsISX1IauMoCyHWT/wjW7SZzod7ibOzvhytJcjVWzsJwCig1vUV0g1kRQfjIbdesmloVN46ESKvaEigbKDiWX4oXN2oMdWtLsZQIaPz66Aw6IHIfi8HcHYnvCj3RbPbZP5uFEBfAAVkGI0+YHxvo/H3ysm/VdPzU3q2jiY3czUcuPQGEcTPo01vcBj+WiGiMhTzmqZocem/Y0804Pvntk2Au3suvnsWWUrlcBlVIL2vSQyDA10nojAHA0KTjTq+jFEMB8GCSqGSIb3DQEJFDESHhAAcQByAHcAYQBpAHQAZQByMCEGCSqGSIb3DQEJFTEUBBJUaW1lIDE3ODY0NTU1OTQ1NjYwggRxBgkqhkiG9w0BBwagggRiMIIEXgIBADCCBFcGCSqGSIb3DQEHATBmBgkqhkiG9w0BBQ0wWTA4BgkqhkiG9w0BBQwwKwQU0Wmu8VD1Tiy3NMfhMCG4x2iHQ9kCAicQAgEgMAwGCCqGSIb3DQIJBQAwHQYJYIZIAWUDBAEqBBDfc6E4FZo4hStBhgp/ixF1gIID4IJ35/3cwaEGpU16VdBudiz7vMbu5OwgGxdnQ1k8HUrZ3EdtcbIzLV7QgAIffTKfaf0q6qDXpuzbQbmk0SbllEIbRh1L6ymVKxcEHoM4vSn1/z0mQgvX7wqnN5IyCFIRTzYHP+4SQdJ/FxZrj03N/ulhMRTlXYGKokSocvEDoCbe7wbQZaA+AL5DklWMCllxlBjJe+JxO8Nmo4xzmBPPn1rL1RkQfuzh5Uw1BS7Fdltu0bVAjhChjYXWa+u13a56xsJjqWW0UMkfKLMdoXPslw0+XOPyneRpuOHroEeIuqsXmZRT1Dw6N9lCJBjrSLpezyo/1daycLrUgLLHzIQkAYpLjBYtKZ8J8ob1bYdzIxJHBNz1yJes6HmFGJByiHjx3CY4CSP1tHjR7Evep5mxxicCXG8D+r/ckHI6qh5fyQnO9/dmATrqlJ/HzRqt+a3ewoKLet+PQWV/8qMsCmTFWmmAP+AOZuasG4tWKK/9ATLsUtQryyu5jzKxZIxK2GbxSKluHJHnN6BoNmy5CrxaMCsz0d4/sbtgitg3prHUW3N5qaWd6rthYxcAqb7IVCp8YySC6TQwuvJhkdm+YmZ/4/dK+dasV+CQLOtaAb7x9RyFwQrqvvGTIhwdmkMPfgxzGQELomxN0qzvynx+nd8aTERKSzsjgQzsmJ9XFULSeS5y+EmIivLas5lhWOpvz9TA4g6KDPCyGfGH9KI58AOPIy/JDFKjmdRaKc50FVTWw1a0+H6mt3yUm8pn82EhVx1WLoJzA70rd6B0uUlAVO4jIXCZQpATS6Le7NGHWvrjsRZvwcS1gW0AicrsUhI8sjdq4fWsxHifo0h1WhmO25vZ/EaQONQep5eGK1t5x4Vu6oOemVb8s1SxsPHysp+vD1+E7Sx/Kx9Pdw4tK5uojx/rmqVVf/Y2R1bJ5nww+lIgy+gwHL803FSP7+hro1hmLKagy6oscl+aDWZsXGluJ/OAK5cUYbMQxWra282d/eJZLmMV0keTj5N0DqMsOQFqP0Hb0o8YaCXdhj/xFXtusx9pC3eelg4AMYPJQz3IbYREa+qzkxkgxh0LCrGVFvRIuvqfgoOPP6dvjPDOxlwu835ZlIUO6rql/Omk7UYiIATHrU0GlID9hy9ZIoHSypGjDEtaSn7z3mGE4wtcWMk/MjhWn519xr5J0M6U4vDSUM4jZoTkb0TUPK9qphcEmmuW1G+FrIQKu6AYJ9OXsB9HWFRRUzDLi/l7++4e8IVzOJsem+U75pCk9oAFsAXO7NWtRhdTtXfEn7KcHZZGf4bhBPf93QUlV58r7vN1Dt9A6kZhjqJ3ME0wMTANBglghkgBZQMEAgEFAAQgxg3jKciwkAp+miAp3N4hS6ugtFrexDx6TevyTiGNaF0EFPrS8azAsvoUyNmwULCZEOUBhxkXAgInEA==' | base64 --decode > qrwaiter-test.jks
+      - name: Decode signing key
+        shell: bash
+        env:
+          QR_WAITER_KEYSTORE_BASE64: ${{ secrets.QR_WAITER_KEYSTORE_BASE64 }}
+        run: printf '%s' "$QR_WAITER_KEYSTORE_BASE64" | base64 --decode > qrwaiter-test.p12
 
-      - name: Build signed debug APK
+      - name: Verify Digital Asset Links
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location --retry 6 --retry-delay 5 \
+            https://kristijanpoposki.github.io/.well-known/assetlinks.json \
+            | grep --fixed-strings 'com.kristijanpoposki.qrwaitertest'
+
+      - name: Build signed test APK
+        env:
+          QR_WAITER_KEY_PASSWORD: ${{ secrets.QR_WAITER_KEY_PASSWORD }}
+          QR_WAITER_VERSION_CODE: ${{ inputs.version_code }}
+          QR_WAITER_VERSION_NAME: ${{ inputs.version_name }}
         run: gradle :app:assembleDebug --stacktrace
+
+      - name: Verify APK
+        shell: bash
+        run: |
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/debug/app-debug.apk \
+            | grep --fixed-strings "package: name='com.kristijanpoposki.qrwaitertest'"
+          sha256sum app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: qr-waiter-test-apk
+          name: qr-waiter-twa-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14
