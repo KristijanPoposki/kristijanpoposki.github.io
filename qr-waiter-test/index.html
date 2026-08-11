@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#F4F8EE" />
+  <meta name="theme-color" content="#FFFFFF" />
   <title>QR Waiter Test</title>
   <style>
     :root {
@@ -3594,6 +3594,904 @@
       padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
     }
 
+  
+    /* My Orders view switch */
+    .my-orders-page-refined {
+      padding-top: 2px !important;
+    }
+
+    .my-orders-view-filter {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: fit-content;
+      gap: 3px;
+      padding: 3px;
+      margin: 0 0 14px auto;
+      border-radius: 14px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(34, 39, 33, .045);
+    }
+
+    .my-orders-view-btn {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 0;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 11px;
+      background: transparent;
+      color: #6A7166;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .my-orders-view-btn.active {
+      background: var(--brand);
+      color: #223017;
+    }
+
+    .my-orders-view-btn:focus-visible {
+      outline: 2px solid var(--brand-dark);
+      outline-offset: 2px;
+    }
+
+    .my-orders-compact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 0 18px;
+    }
+
+    .compact-delivery-tile {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .compact-delivery-tile .compact-delivery-mark {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .compact-delivery-tile small {
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 750;
+      color: #6A7166;
+    }
+
+    @media (min-width: 430px) {
+      .my-orders-compact-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 350px) {
+      .my-orders-view-btn {
+        padding-inline: 11px;
+      }
+      .my-orders-compact-grid {
+        gap: 8px;
+      }
+    }
+
+  
+    /* My Orders view dropdown — inspired by compact/list selector pattern */
+    .my-orders-page-refined {
+      position: relative;
+    }
+
+    .my-orders-view-dropdown {
+      position: relative;
+      width: fit-content;
+      margin: 0 0 14px auto;
+      z-index: 40;
+    }
+
+    .my-orders-view-filter {
+      display: none !important;
+    }
+
+    .my-orders-view-trigger {
+      appearance: none;
+      -webkit-appearance: none;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 13px;
+      background: #FFFFFF;
+      color: #2A2D28;
+      box-shadow: 0 2px 9px rgba(34, 39, 33, .06);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 750;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .my-orders-view-trigger.open {
+      box-shadow: 0 4px 14px rgba(34, 39, 33, .10);
+    }
+
+    .view-trigger-icon,
+    .view-option-list {
+      width: 18px;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 0 0 18px;
+    }
+
+    .view-trigger-icon span,
+    .view-option-list span {
+      height: 2px;
+      border-radius: 999px;
+      background: #5D8B3B;
+    }
+
+    .view-trigger-icon span:nth-child(1),
+    .view-option-list span:nth-child(1) { width: 16px; }
+    .view-trigger-icon span:nth-child(2),
+    .view-option-list span:nth-child(2) { width: 12px; }
+    .view-trigger-icon span:nth-child(3),
+    .view-option-list span:nth-child(3) { width: 8px; }
+
+    .view-trigger-chevron {
+      width: 16px;
+      height: 16px;
+      transition: transform .16s ease;
+      color: #60665C;
+      flex: 0 0 16px;
+    }
+
+    .my-orders-view-trigger.open .view-trigger-chevron {
+      transform: rotate(180deg);
+    }
+
+    .my-orders-view-menu {
+      position: absolute;
+      top: calc(100% + 7px);
+      right: 0;
+      width: 188px;
+      padding: 6px;
+      border-radius: 15px;
+      background: #FFFFFF;
+      box-shadow:
+        0 14px 36px rgba(30, 35, 28, .14),
+        0 2px 7px rgba(30, 35, 28, .06);
+      border: 1px solid rgba(44, 50, 40, .055);
+    }
+
+    .my-orders-view-menu[hidden] {
+      display: none !important;
+    }
+
+    .my-orders-view-option {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      min-height: 48px;
+      display: grid;
+      grid-template-columns: 22px 22px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      color: #2D312B;
+      text-align: left;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 690;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .my-orders-view-option:active,
+    .my-orders-view-option.active {
+      background: #F4F8EE;
+    }
+
+    .view-check {
+      width: 22px;
+      color: #2B3425;
+      font-size: 18px;
+      line-height: 1;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .view-option-icon {
+      color: #5D8B3B;
+    }
+
+    .view-option-grid {
+      width: 19px;
+      height: 19px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+    }
+
+    .view-option-grid i {
+      display: block;
+      border: 2px solid #5D8B3B;
+      border-radius: 3px;
+    }
+
+  
+    /* =========================================================
+       WCAG 2.2 AA accessibility hardening
+       Keeps the existing V23 visual direction.
+       ========================================================= */
+
+    :root {
+      /* 4.5:1+ normal-text contrast on white / app background. */
+      --muted: #60675E !important;
+
+      /* Accessible green for text/icons; light brand fill stays unchanged. */
+      --a11y-green-text: #4F7B2B;
+      --a11y-green-strong: #4A722B;
+
+      /* 3:1+ control boundary against white and #F4F8EE. */
+      --a11y-control-border: #87917F;
+
+      /* High-contrast focus indicator: >3:1 against white and brand green. */
+      --a11y-focus: #285414;
+    }
+
+    /* ---------- Text contrast ---------- */
+
+    .qty,
+    .nav-btn.active,
+    .delivery-orders-group .my-orders-group-title,
+    .delivery-orders-group .my-orders-group-count {
+      color: var(--a11y-green-text) !important;
+    }
+
+    .nav-btn {
+      color: #5C645A !important;
+    }
+
+    .nav-btn.active {
+      color: var(--a11y-green-text) !important;
+      font-weight: 800 !important;
+    }
+
+    .item-note,
+    .more-line,
+    .my-orders-empty,
+    .sheet-head p,
+    .detail-name span,
+    .detail-section [style*="color:var(--muted)"],
+    .section-option small,
+    .search-group-head small {
+      color: #60675E !important;
+    }
+
+    .search-input::placeholder,
+    .text-input::placeholder,
+    .table-number-input::placeholder {
+      color: #62695F !important;
+      opacity: 1 !important;
+    }
+
+    /* Green toast with white text now exceeds 4.5:1. */
+    .toast {
+      background: #3F6722 !important;
+      color: #FFFFFF !important;
+    }
+
+    /* ---------- Non-text contrast / component boundaries ---------- */
+
+    /* Keep the pastel selected state but give it a 3:1+ visible boundary. */
+    .state-slider {
+      background: var(--brand) !important;
+      box-shadow:
+        0 0 0 2px var(--a11y-green-strong),
+        0 6px 14px rgba(148,199,97,.24) !important;
+    }
+
+    /* Main actions retain the pastel fill with a compliant dark boundary. */
+    .btn-primary,
+    .create-btn,
+    .choice.selected {
+      border: 2px solid var(--a11y-green-strong) !important;
+    }
+
+    /* Controls whose outline is needed to identify the component. */
+    .search-input,
+    .text-input,
+    .table-number-input,
+    .btn-secondary,
+    .my-orders-view-trigger,
+    .my-orders-view-menu,
+    .accepted-table-tile {
+      border-color: var(--a11y-control-border) !important;
+    }
+
+    .my-orders-view-trigger {
+      border-style: solid !important;
+      border-width: 1px !important;
+    }
+
+    .my-orders-view-menu {
+      border-style: solid !important;
+      border-width: 1px !important;
+    }
+
+    /* Cards are themselves tappable controls; provide a clear 3:1 edge. */
+    .order-card {
+      border-color: var(--a11y-control-border) !important;
+    }
+
+    /* ---------- Focus visible ---------- */
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible,
+    .state-tab:focus-visible,
+    .accepted-table-tile:focus-visible,
+    .section-trigger:focus-visible,
+    .language-toggle:focus-visible,
+    .search-toggle:focus-visible,
+    .search-back:focus-visible,
+    .btn:focus-visible,
+    .my-orders-view-trigger:focus-visible,
+    .my-orders-view-option:focus-visible {
+      outline: 3px solid var(--a11y-focus) !important;
+      outline-offset: 3px !important;
+      box-shadow: none !important;
+    }
+
+    /* Focus that is drawn inside a popup must remain fully visible. */
+    .section-option:focus-visible,
+    .language-option:focus-visible,
+    .my-orders-view-option:focus-visible {
+      outline-offset: -3px !important;
+    }
+
+    /* ---------- Do not rely on color alone ---------- */
+
+    .nav-btn {
+      position: relative;
+    }
+
+    .nav-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 1px;
+      width: 24px;
+      height: 3px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+      background: var(--a11y-green-strong);
+    }
+
+    /* Selected view already has a checkmark; strengthen its selected shape too. */
+    .my-orders-view-option.active {
+      box-shadow: inset 3px 0 0 var(--a11y-green-strong);
+    }
+
+    /* ---------- Touch target consistency ---------- */
+
+    .my-orders-view-trigger,
+    .icon-btn,
+    .search-clear,
+    .active-search-clear {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    /* ---------- High contrast / forced colors ---------- */
+
+    @media (forced-colors: active) {
+      .state-slider,
+      .btn-primary,
+      .create-btn,
+      .choice.selected,
+      .nav-btn.active::after {
+        forced-color-adjust: auto;
+      }
+    }
+
+    /* ---------- Reduced-motion preference ---------- */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+  
+    /* Larger order action labels across all order states */
+    .card-actions .btn,
+    .universal-actions .btn,
+    .delivery-actions .btn {
+      font-size: 16px !important;
+      font-weight: 850 !important;
+    }
+
+  
+    /* Remove the additional WCAG visual outlines/borders and nav underline */
+    .state-slider {
+      box-shadow: 0 6px 14px rgba(148,199,97,.24) !important;
+    }
+
+    .btn-primary,
+    .create-btn,
+    .choice.selected {
+      border-width: 0 !important;
+    }
+
+    .search-input,
+    .text-input,
+    .table-number-input,
+    .btn-secondary,
+    .my-orders-view-trigger,
+    .my-orders-view-menu,
+    .accepted-table-tile,
+    .order-card {
+      border-color: transparent !important;
+    }
+
+    .my-orders-view-trigger,
+    .my-orders-view-menu {
+      border-width: 0 !important;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible,
+    .state-tab:focus-visible,
+    .accepted-table-tile:focus-visible,
+    .section-trigger:focus-visible,
+    .language-toggle:focus-visible,
+    .search-toggle:focus-visible,
+    .search-back:focus-visible,
+    .btn:focus-visible,
+    .my-orders-view-trigger:focus-visible,
+    .my-orders-view-option:focus-visible,
+    .section-option:focus-visible,
+    .language-option:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .nav-btn.active::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .my-orders-view-option.active {
+      box-shadow: none !important;
+    }
+
+  
+    /* Header utility controls: white surfaces + stronger black foreground */
+    .search-toggle.lightweight,
+    .language-toggle,
+    .header-view-trigger {
+      background: #FFFFFF !important;
+      color: #151713 !important;
+      box-shadow: 0 2px 8px rgba(28, 32, 26, .055) !important;
+    }
+
+    .search-toggle.lightweight svg,
+    .language-toggle svg,
+    .header-view-trigger svg {
+      color: #151713 !important;
+      stroke: currentColor !important;
+    }
+
+    .language-toggle #languageLabel {
+      color: #151713 !important;
+      font-weight: 850 !important;
+    }
+
+    .search-toggle.lightweight:hover,
+    .language-toggle:hover,
+    .header-view-trigger:hover {
+      background: #FFFFFF !important;
+    }
+
+    /* My Orders view selector now lives beside Search + Language. */
+    .my-orders-header-filter {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .my-orders-header-filter[hidden] {
+      display: none !important;
+    }
+
+    .header-view-trigger {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 48px !important;
+      min-width: 48px !important;
+      height: 48px !important;
+      min-height: 48px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 15px !important;
+      display: inline-grid !important;
+      place-items: center !important;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .header-view-icon {
+      grid-area: 1 / 1;
+      color: #151713 !important;
+    }
+
+    .header-view-icon-list {
+      width: 21px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .header-view-icon-list span {
+      height: 2.2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .header-view-icon-list span:nth-child(1) { width: 20px; }
+    .header-view-icon-list span:nth-child(2) { width: 15px; }
+    .header-view-icon-list span:nth-child(3) { width: 10px; }
+
+    .header-view-icon-grid {
+      width: 20px;
+      height: 20px;
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+    }
+
+    .header-view-icon-grid i {
+      display: block;
+      border: 2px solid currentColor;
+      border-radius: 3px;
+    }
+
+    .header-view-trigger[data-view="compact"] .header-view-icon-list {
+      display: none;
+    }
+
+    .header-view-trigger[data-view="compact"] .header-view-icon-grid {
+      display: grid;
+    }
+
+    .header-view-menu {
+      position: absolute !important;
+      top: calc(100% + 8px) !important;
+      right: 0 !important;
+      width: 188px !important;
+      margin: 0 !important;
+      z-index: 1600 !important;
+    }
+
+    /* Old in-page filter container is no longer used. */
+    .my-orders-page-refined > .my-orders-view-dropdown,
+    .my-orders-page-refined > .my-orders-view-filter {
+      display: none !important;
+    }
+
+  
+    /* Small spacing between Search, Language, and My Orders filter controls */
+    .header-actions {
+      gap: 6px !important;
+    }
+
+  
+    /* Filled active state for bottom navigation */
+    .nav-btn {
+      border-radius: 16px !important;
+      transition: background-color .16s ease, color .16s ease;
+    }
+
+    .nav-btn.active {
+      background: var(--brand) !important;
+      color: #223017 !important;
+      font-weight: 850 !important;
+    }
+
+    .nav-btn.active svg {
+      color: #223017 !important;
+      stroke: currentColor !important;
+    }
+
+  
+    /* Active bottom navigation: fill only the icon area */
+    .nav-btn.active {
+      background: transparent !important;
+      color: #223017 !important;
+      font-weight: 850 !important;
+    }
+
+    .nav-btn.active svg {
+      position: relative;
+      z-index: 1;
+      color: #223017 !important;
+      stroke: currentColor !important;
+    }
+
+    .nav-btn {
+      position: relative;
+    }
+
+    .nav-btn.active::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      width: 42px;
+      height: 32px;
+      transform: translateX(-50%);
+      border-radius: 12px;
+      background: var(--brand);
+      z-index: 0;
+    }
+
+    .nav-btn span,
+    .nav-btn .nav-label {
+      position: relative;
+      z-index: 1;
+    }
+
+  
+    /* Active bottom navigation: fill the actual icon shape only */
+    .nav-btn.active {
+      background: transparent !important;
+      color: #111111 !important;
+    }
+
+    .nav-btn.active::before,
+    .nav-btn.active::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .nav-btn .nav-icon {
+      width: 22px !important;
+      height: 22px !important;
+      overflow: visible;
+    }
+
+    .nav-btn .nav-icon-filled {
+      display: none;
+    }
+
+    .nav-btn.active .nav-icon-outline {
+      display: none;
+    }
+
+    .nav-btn.active .nav-icon-filled {
+      display: block;
+      fill: var(--brand) !important;
+      stroke: none !important;
+    }
+
+    .nav-btn.active .nav-icon-filled .nav-icon-cutout {
+      fill: #FFFFFF !important;
+    }
+
+    .nav-btn span {
+      color: inherit !important;
+    }
+
+  
+    /* Preserve the exact original bottom-nav icons; active state only fills them. */
+    .nav-btn {
+      background: transparent !important;
+    }
+
+    .nav-btn::before,
+    .nav-btn::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .nav-btn .nav-icon {
+      width: 22px !important;
+      height: 22px !important;
+      color: #5C645A !important;
+    }
+
+    .nav-btn .nav-icon-fill-shape,
+    .nav-btn .nav-icon-inner-lines {
+      display: none;
+    }
+
+    .nav-btn.active {
+      background: transparent !important;
+      color: #111111 !important;
+    }
+
+    .nav-btn.active .nav-icon {
+      color: var(--brand) !important;
+    }
+
+    .nav-btn.active .nav-icon-fill-shape {
+      display: block;
+      fill: var(--brand) !important;
+      stroke: none !important;
+    }
+
+    .nav-btn.active .nav-icon-outline {
+      display: block !important;
+      fill: none !important;
+      stroke: var(--brand) !important;
+    }
+
+    /* Keep the original calendar/order lines readable inside its green fill. */
+    .nav-btn.active .nav-icon-orders .nav-icon-inner-lines {
+      display: block;
+    }
+
+    .nav-btn.active span {
+      color: #111111 !important;
+    }
+
+  
+    /* =========================================================
+       Final bottom navigation
+       ========================================================= */
+
+    /* Extend the actual navigation surface through the complete
+       bottom safe area instead of leaving a visible seam/gap. */
+    html,
+    body {
+      min-height: 100%;
+      min-height: 100dvh;
+      background: #FFFFFF !important;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    .bottom-nav {
+      bottom: 0 !important;
+      height: auto !important;
+      min-height: calc(82px + env(safe-area-inset-bottom)) !important;
+      padding: 8px 24px max(10px, env(safe-area-inset-bottom)) !important;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom)) !important;
+      background: #FFFFFF !important;
+      border-top: 1px solid rgba(18,18,18,.10) !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Restore the larger labels/icons across every bottom-nav item. */
+    .nav-btn {
+      min-height: 62px !important;
+      gap: 4px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+      color: #62675F !important;
+      background: transparent !important;
+    }
+
+    .nav-btn .nav-icon,
+    .nav-btn svg {
+      width: 25px !important;
+      height: 25px !important;
+    }
+
+    .create-btn {
+      width: 64px !important;
+      height: 64px !important;
+    }
+
+    .create-btn svg {
+      width: 27px !important;
+      height: 27px !important;
+    }
+
+    .create-label {
+      top: 49px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      color: #62675F !important;
+      white-space: nowrap;
+    }
+
+    /* No active pill/background. Only the exact original icon shape
+       is filled, and the active label remains highlighted green. */
+    .nav-btn.active {
+      background: transparent !important;
+      color: var(--brand-deeper) !important;
+      font-weight: 850 !important;
+    }
+
+    .nav-btn.active::before,
+    .nav-btn.active::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .nav-btn.active span {
+      color: var(--brand-deeper) !important;
+      font-weight: 850 !important;
+    }
+
+    .nav-btn .nav-icon-fill-shape,
+    .nav-btn .nav-icon-inner-lines {
+      display: none;
+    }
+
+    .nav-btn .nav-icon-outline {
+      display: block !important;
+      stroke: currentColor !important;
+    }
+
+    .nav-btn.active .nav-icon {
+      color: var(--brand) !important;
+    }
+
+    .nav-btn.active .nav-icon-fill-shape {
+      display: block !important;
+      fill: var(--brand) !important;
+      stroke: none !important;
+    }
+
+    .nav-btn.active .nav-icon-outline {
+      display: block !important;
+      fill: none !important;
+      stroke: var(--brand) !important;
+    }
+
+    .nav-btn.active .nav-icon-orders .nav-icon-inner-lines {
+      display: block !important;
+    }
+
+    /* =========================================================
+       Compact My Orders grouping
+       ========================================================= */
+
+    .compact-orders-group .my-orders-group-title {
+      margin-bottom: 10px !important;
+    }
+
+    .compact-orders-group .my-orders-compact-grid {
+      margin-bottom: 4px;
+    }
+
+    .compact-orders-group.delivery-orders-group {
+      margin-top: 18px !important;
+    }
+
+    .compact-orders-group .delivery-orders-divider {
+      margin-bottom: 16px !important;
+    }
+
+    /* Keep enough content clearance for the taller PWA bottom nav. */
+    main,
+    #mainContent {
+      padding-bottom: calc(106px + env(safe-area-inset-bottom)) !important;
+    }
+
   </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
@@ -3649,6 +4547,56 @@
               </button>
             </div>
           </div>
+
+          <div class="my-orders-header-filter" id="myOrdersHeaderFilter" hidden>
+            <button
+              class="my-orders-view-trigger header-view-trigger"
+              id="myOrdersViewTrigger"
+              type="button"
+              aria-label="Change My Orders view. Current view: Detailed"
+              aria-haspopup="menu"
+              aria-controls="myOrdersViewMenu"
+              aria-expanded="false"
+              data-view="detailed"
+            >
+              <span class="header-view-icon header-view-icon-list" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </span>
+              <span class="header-view-icon header-view-icon-grid" aria-hidden="true">
+                <i></i><i></i><i></i><i></i>
+              </span>
+            </button>
+
+            <div class="my-orders-view-menu header-view-menu" id="myOrdersViewMenu" role="menu" aria-label="My Orders view" hidden>
+              <button
+                class="my-orders-view-option active"
+                type="button"
+                data-myorders-view="detailed"
+                role="menuitemradio"
+                aria-checked="true"
+              >
+                <span class="view-check" aria-hidden="true">✓</span>
+                <span class="view-option-icon view-option-list" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </span>
+                <span>Detailed</span>
+              </button>
+
+              <button
+                class="my-orders-view-option"
+                type="button"
+                data-myorders-view="compact"
+                role="menuitemradio"
+                aria-checked="false"
+              >
+                <span class="view-check" aria-hidden="true"></span>
+                <span class="view-option-icon view-option-grid" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </span>
+                <span>Compact</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3678,10 +4626,10 @@
       <div class="state-nav-wrap" aria-label="Order states">
         <nav class="state-nav" role="tablist">
           <span class="state-slider" aria-hidden="true"></span>
-          <button class="state-tab active" data-state="pending" role="tab" aria-selected="true">Pending</button>
-          <button class="state-tab" data-state="accepted" role="tab" aria-selected="false">Accepted</button>
-          <button class="state-tab" data-state="delivery" role="tab" aria-selected="false">Delivery</button>
-          <button class="state-tab" data-state="kds" role="tab" aria-selected="false">KDS</button>
+          <button class="state-tab active" data-state="pending" role="tab" aria-selected="true" tabindex="0">Pending</button>
+          <button class="state-tab" data-state="accepted" role="tab" aria-selected="false" tabindex="-1">Accepted</button>
+          <button class="state-tab" data-state="delivery" role="tab" aria-selected="false" tabindex="-1">Delivery</button>
+          <button class="state-tab" data-state="kds" role="tab" aria-selected="false" tabindex="-1">KDS</button>
         </nav>
       </div>
     </header>
@@ -3689,8 +4637,14 @@
     <main id="mainContent"></main>
 
     <nav class="bottom-nav" aria-label="Main navigation">
-      <button class="nav-btn active" id="homeNav" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg>
+      <button class="nav-btn active" id="homeNav" aria-label="Home" aria-current="page">
+        <svg class="nav-icon nav-icon-home" viewBox="0 0 24 24" aria-hidden="true">
+          <path class="nav-icon-fill-shape" d="M3 11 12 3l9 8-2 0v9h-4v-6H9v6H5V11Z"/>
+          <g class="nav-icon-outline" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 11 9-8 9 8"/>
+            <path d="M5 10v10h14V10M9 20v-6h6v6"/>
+          </g>
+        </svg>
         <span>Home</span>
       </button>
 
@@ -3702,22 +4656,31 @@
       </div>
 
       <button class="nav-btn" id="myOrdersNav" aria-label="My Orders">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 3v4M16 3v4M8 11h8M8 15h5"/></svg>
+        <svg class="nav-icon nav-icon-orders" viewBox="0 0 24 24" aria-hidden="true">
+          <path class="nav-icon-fill-shape" d="M4 5h16v15H4z"/>
+          <g class="nav-icon-outline" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5h16v15H4z"/>
+            <path d="M8 3v4M16 3v4M8 11h8M8 15h5"/>
+          </g>
+          <g class="nav-icon-inner-lines" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round">
+            <path d="M8 11h8M8 15h5"/>
+          </g>
+        </svg>
         <span>My Orders</span>
       </button>
     </nav>
   </div>
 
-  <div class="scrim" id="detailScrim" role="dialog" aria-modal="true" aria-label="Order details">
+  <div class="scrim" id="detailScrim" role="dialog" aria-modal="true" aria-labelledby="detailDialogTitle">
     <section class="sheet" id="detailSheet"></section>
   </div>
 
-  <div class="scrim" id="manualScrim" role="dialog" aria-modal="true" aria-label="Create manual order">
+  <div class="scrim" id="manualScrim" role="dialog" aria-modal="true" aria-labelledby="manualDialogTitle">
     <section class="sheet" id="manualSheet">
       <div class="grabber"></div>
       <div class="sheet-head">
         <div>
-          <h2>New manual order</h2>
+          <h2 id="manualDialogTitle">New manual order</h2>
           <p>Create an order directly for a table.</p>
         </div>
         <button class="icon-btn" data-close="manual" aria-label="Close manual order">
@@ -3876,6 +4839,7 @@
 
     let activeState = 'pending';
     let currentView = 'home';
+    let myOrdersViewMode = 'detailed';
     let selectedTable = null;
     let searchQuery = '';
 
@@ -3907,6 +4871,10 @@
     const languageToggle = document.getElementById('languageToggle');
     const languageLabel = document.getElementById('languageLabel');
     const languageOptions = [...document.querySelectorAll('.language-option')];
+    const myOrdersHeaderFilter = document.getElementById('myOrdersHeaderFilter');
+    const myOrdersViewTrigger = document.getElementById('myOrdersViewTrigger');
+    const myOrdersViewMenu = document.getElementById('myOrdersViewMenu');
+    const myOrdersViewOptions = [...document.querySelectorAll('[data-myorders-view]')];
 
     const svgTable = `<svg width="16" height="16" viewBox="0 0 50 50" aria-hidden="true"><ellipse cx="25" cy="35.547" fill="#696967" rx="12.591" ry="3.357"></ellipse><path fill="#C7C7C7" d="M25.0251,35.8275h-6.99c0,0-4.04-1.78-4.82-13.48c2.4779,0.3413,4.5127,0.4709,6.83,0.61     c0.04,3.09,0.56,11.65,4.96,12.86C25.0151,35.8275,25.0151,35.8275,25.0251,35.8275z"></path><path fill="#C7C7C7" d="M36.7851,22.3474c-0.78,11.7-4.82,13.48-4.82,13.48h-6.99c0.01,0,0.02-0.01,0.03-0.01     c4.4-1.22,4.91-9.78,4.95-12.86C33.0937,22.769,33.9245,22.7053,36.7851,22.3474z"></path><ellipse cx="25" cy="14.062" fill="#444445" rx="24" ry="5.659"></ellipse><path fill="#696967" d="M25,19.7202C11.7452,19.7202,1,17.1868,1,14.0617v3.3575C1,20.5443,11.7452,23.0778,25,23.0778    c13.2548,0,24-2.5334,24-5.6585v-3.3575C49,17.1868,38.2548,19.7202,25,19.7202z"></path><path fill="#696967" d="M18.5651 22.8675c-1.89-.12-3.68-.29-5.35-.52 0-.04-.0099-.09-.0099-.14C15.1351 22.4874 16.5751 22.7174 18.5651 22.8675zM21.0991 10.7842c2.5889.1055 5.1493.4324 7.6806.9868C26.1906 11.6676 23.6306 11.3365 21.0991 10.7842zM30.775 14.6527c2.589.1055 5.1494.4324 7.6806.9868C35.8665 15.536 33.3065 15.205 30.775 14.6527zM30.775 11.5295c2.589.1055 5.1494.4325 7.6806.9869C35.8665 12.4129 33.3065 12.0818 30.775 11.5295zM17.6136 12.5164c2.5889.1055 5.1493.4324 7.6806.9868C22.7051 13.3997 20.1451 13.0687 17.6136 12.5164zM21.98 14.6527c2.5889.1055 5.1493.4324 7.6806.9868C27.0715 15.536 24.5115 15.205 21.98 14.6527zM11.7305 14.3244c2.5889.1056 5.1493.4325 7.6806.9869C16.822 15.2079 14.262 14.8768 11.7305 14.3244zM12.9211 12.5164c1.3353-.0555 2.642.1103 3.9197.5036C15.5052 13.0776 14.1989 12.9076 12.9211 12.5164zM28.4752 16.8874c1.3352-.0555 2.6419.1103 3.9196.5036C31.0593 17.4486 29.753 17.2786 28.4752 16.8874zM39.5347 11.7711c1.3352-.0554 2.642.1104 3.9196.5036C42.1187 12.3324 40.8125 12.1624 39.5347 11.7711zM6.5458 13.8099c1.3352-.0555 2.6419.1103 3.9196.5036C9.1298 14.3711 7.8236 14.2011 6.5458 13.8099zM11.4247 16.1319c1.3352-.0555 2.6419.1103 3.9196.5036C14.0087 16.6931 12.7025 16.5232 11.4247 16.1319zM24.2603 9.7133c1.3352-.0555 2.6419.1103 3.9196.5036C26.8443 10.2745 25.538 10.1045 24.2603 9.7133zM25.9906 13.086c1.3352-.0555 2.642.1103 3.9196.5036C28.5746 13.6472 27.2684 13.4772 25.9906 13.086zM31.9677 10.2169c1.3352-.0555 2.642.1103 3.9196.5036C34.5519 10.7781 33.2455 10.6081 31.9677 10.2169zM13.974 10.774c2.1169-.0566 4.216.1092 6.2968.5036C18.1538 11.3364 16.0549 11.1664 13.974 10.774zM20.5915 16.6355c1.3352-.0554 2.642.1104 3.9196.5036C23.1756 17.1968 21.8694 17.0269 20.5915 16.6355zM10.0083 11.036c1.3352-.0554 2.642.1104 3.9196.5036C12.5924 11.5973 11.2862 11.4273 10.0083 11.036zM37.75 14.0616c1.3352-.0554 2.642.1104 3.9196.5037C40.334 14.6229 39.0278 14.453 37.75 14.0616z"></path><path fill="#444445" d="M25.0001,38.9047c-6.9538,0-12.5908-1.5033-12.5908-3.3575v2.6921c0,1.8543,5.637,3.3575,12.5908,3.3575    c6.9537,0,12.5908-1.5033,12.5908-3.3575v-2.6921C37.5908,37.4015,31.9537,38.9047,25.0001,38.9047z"></path></svg>`;
     const svgBike = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h4l2-6h3M9 8h4l2 3M7 12h4"/></svg>`;
@@ -3929,6 +4897,29 @@
     function closeSectionMenu() {
       sectionMenuWrap.classList.remove('open');
       sectionTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function closeMyOrdersViewMenu() {
+      if (!myOrdersViewMenu || !myOrdersViewTrigger) return;
+      myOrdersViewMenu.hidden = true;
+      myOrdersViewTrigger.setAttribute('aria-expanded', 'false');
+      myOrdersViewTrigger.classList.remove('open');
+    }
+
+    function syncMyOrdersViewFilter() {
+      if (!myOrdersViewTrigger) return;
+
+      myOrdersViewTrigger.dataset.view = myOrdersViewMode;
+      const label = myOrdersViewMode === 'compact' ? 'Compact' : 'Detailed';
+      myOrdersViewTrigger.setAttribute('aria-label', `Change My Orders view. Current view: ${label}`);
+
+      myOrdersViewOptions.forEach(option => {
+        const selected = option.dataset.myordersView === myOrdersViewMode;
+        option.classList.toggle('active', selected);
+        option.setAttribute('aria-checked', String(selected));
+        const check = option.querySelector('.view-check');
+        if (check) check.textContent = selected ? '✓' : '';
+      });
     }
 
     function escapeHtml(value) {
@@ -4090,8 +5081,20 @@
       </button>`;
     }
 
+    function compactOwnedTile(order) {
+      if (order.state === 'delivery') {
+        return `<button class="accepted-table-tile compact-delivery-tile" data-open="${order.id}" aria-label="Open delivery order ${displayOrderNumber(order.id)}">
+          <span class="compact-delivery-mark">D</span>
+          <small>#${escapeHtml(displayOrderNumber(order.id))}</small>
+        </button>`;
+      }
+      return acceptedTableTile(order);
+    }
+
     function renderHome() {
       currentView = 'home';
+      if (myOrdersHeaderFilter) myOrdersHeaderFilter.hidden = true;
+      closeMyOrdersViewMenu();
       document.querySelector('.app-shell').classList.remove('my-orders-mode');
       homeNav.classList.add('active');
       myOrdersNav.classList.remove('active');
@@ -4117,6 +5120,8 @@
 
     function renderMyOrders() {
       currentView = 'myOrders';
+      if (myOrdersHeaderFilter) myOrdersHeaderFilter.hidden = false;
+      syncMyOrdersViewFilter();
       homeNav.classList.remove('active');
       myOrdersNav.classList.add('active');
       document.querySelector('.state-nav-wrap').style.display = 'none';
@@ -4135,42 +5140,71 @@
 
       const tableOrders = mine.filter(o => o.state === 'accepted');
       const deliveryOrders = mine.filter(o => o.state === 'delivery' && o.deliveryAccepted);
-      const activeTables = [...new Set(tableOrders.map(o => o.table))].length;
 
-      const tableGroup = `
-        <section class="my-orders-group table-orders-group">
-          <div class="my-orders-group-title">
-            <span>Table Orders</span>
-            <span class="my-orders-group-count">${tableOrders.length}</span>
-          </div>
-          <div class="order-list">
+      syncMyOrdersViewFilter();
+
+      let content = '';
+
+      if (myOrdersViewMode === 'compact') {
+        const compactTableGroup = `
+          <section class="my-orders-group compact-orders-group table-orders-group">
+            <div class="my-orders-group-title">
+              <span>Table Orders</span>
+              <span class="my-orders-group-count">${tableOrders.length}</span>
+            </div>
             ${tableOrders.length
-              ? tableOrders.map(o => cardMarkup(o, false)).join('')
+              ? `<div class="my-orders-compact-grid">${tableOrders.map(compactOwnedTile).join('')}</div>`
               : `<div class="my-orders-empty">No accepted table orders.</div>`}
-          </div>
-        </section>`;
+          </section>`;
 
-      const deliveryGroup = deliveryOrders.length ? `
-        <section class="my-orders-group delivery-orders-group" aria-label="Accepted delivery orders">
-          <div class="delivery-orders-divider" aria-hidden="true"></div>
-          <div class="my-orders-group-title delivery-orders-title">
-            <span>Delivery Orders</span>
-            <span class="my-orders-group-count">${deliveryOrders.length}</span>
-          </div>
-          <div class="order-list">
-            ${deliveryOrders.map(o => cardMarkup(o, false)).join('')}
-          </div>
-        </section>` : '';
+        const compactDeliveryGroup = deliveryOrders.length ? `
+          <section class="my-orders-group compact-orders-group delivery-orders-group" aria-label="Accepted delivery orders">
+            <div class="delivery-orders-divider" aria-hidden="true"></div>
+            <div class="my-orders-group-title delivery-orders-title">
+              <span>Delivery Orders</span>
+              <span class="my-orders-group-count">${deliveryOrders.length}</span>
+            </div>
+            <div class="my-orders-compact-grid">
+              ${deliveryOrders.map(compactOwnedTile).join('')}
+            </div>
+          </section>` : '';
+
+        content = `${compactTableGroup}${compactDeliveryGroup}`;
+      } else {
+        const tableGroup = `
+          <section class="my-orders-group table-orders-group">
+            <div class="my-orders-group-title">
+              <span>Table Orders</span>
+              <span class="my-orders-group-count">${tableOrders.length}</span>
+            </div>
+            <div class="order-list">
+              ${tableOrders.length
+                ? tableOrders.map(o => cardMarkup(o, false)).join('')
+                : `<div class="my-orders-empty">No accepted table orders.</div>`}
+            </div>
+          </section>`;
+
+        const deliveryGroup = deliveryOrders.length ? `
+          <section class="my-orders-group delivery-orders-group" aria-label="Accepted delivery orders">
+            <div class="delivery-orders-divider" aria-hidden="true"></div>
+            <div class="my-orders-group-title delivery-orders-title">
+              <span>Delivery Orders</span>
+              <span class="my-orders-group-count">${deliveryOrders.length}</span>
+            </div>
+            <div class="order-list">
+              ${deliveryOrders.map(o => cardMarkup(o, false)).join('')}
+            </div>
+          </section>` : '';
+
+        content = `${tableGroup}${deliveryGroup}`;
+      }
 
       main.innerHTML = `
-        <div class="my-orders-page">
-          <div class="my-orders-header">
-            <div><h2>My Orders</h2><p>Accepted orders currently assigned to Marko.</p></div>
-            <span class="owned-count">${activeTables} tables</span>
-          </div>
-          ${tableGroup}
-          ${deliveryGroup}
+        <div class="my-orders-page my-orders-page-refined">
+          ${content}
         </div>`;
+
+
 
       bindCardActions();
     }
@@ -4269,7 +5303,7 @@
         <div class="grabber"></div>
         <div class="sheet-head">
           <div>
-            <h2>${order.state === 'delivery' ? order.fulfillment : `Table ${order.table}`} · Order #${displayOrderNumber(order.id)}</h2>
+            <h2 id="detailDialogTitle">${order.state === 'delivery' ? order.fulfillment : `Table ${order.table}`} · Order #${displayOrderNumber(order.id)}</h2>
             <p>${order.state === 'delivery' ? 'Standalone order' : `${sectionLabel(order.section)} section`} · assigned to ${order.waiter}</p>
           </div>
           <button class="icon-btn" data-close="detail" aria-label="Close order details">
@@ -4509,6 +5543,36 @@
     });
 
     homeNav.addEventListener('click', renderHome);
+    if (myOrdersViewTrigger && myOrdersViewMenu) {
+      myOrdersViewTrigger.addEventListener('click', event => {
+        event.stopPropagation();
+        const willOpen = myOrdersViewMenu.hidden;
+        closeSectionMenu();
+        languageWrap.classList.remove('open');
+        languageToggle.setAttribute('aria-expanded', 'false');
+        myOrdersViewMenu.hidden = !willOpen;
+        myOrdersViewTrigger.setAttribute('aria-expanded', String(willOpen));
+        myOrdersViewTrigger.classList.toggle('open', willOpen);
+      });
+
+      myOrdersViewOptions.forEach(option => {
+        option.addEventListener('click', event => {
+          event.stopPropagation();
+          const nextMode = option.dataset.myordersView;
+          if (!nextMode) return;
+          myOrdersViewMode = nextMode;
+          closeMyOrdersViewMenu();
+          renderMyOrders();
+        });
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (myOrdersHeaderFilter && !myOrdersHeaderFilter.contains(event.target)) {
+        closeMyOrdersViewMenu();
+      }
+    });
+
     myOrdersNav.addEventListener('click', renderMyOrders);
     document.getElementById('createOrderBtn').addEventListener('click', openManual);
 
@@ -4548,6 +5612,294 @@
     renderHome();
     setInterval(refreshAgeBadges, 30_000);
   </script>
+
+
+<script>
+(() => {
+  /* WCAG keyboard and focus-management layer. */
+
+  let lastFocusedBeforeDialog = null;
+
+  const focusableSelector = [
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'a[href]',
+    '[tabindex]:not([tabindex="-1"])'
+  ].join(',');
+
+  function visibleFocusable(container) {
+    return [...container.querySelectorAll(focusableSelector)].filter(el => {
+      const style = window.getComputedStyle(el);
+      return !el.hidden &&
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        el.getClientRects().length > 0;
+    });
+  }
+
+  function rememberFocus() {
+    lastFocusedBeforeDialog = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+  }
+
+  function restoreFocus() {
+    const target = lastFocusedBeforeDialog;
+    lastFocusedBeforeDialog = null;
+    window.setTimeout(() => {
+      if (target && document.contains(target)) {
+        target.focus();
+      } else {
+        const fallback = document.querySelector('.nav-btn.active') || document.getElementById('homeNav');
+        if (fallback) fallback.focus();
+      }
+    }, 0);
+  }
+
+  function trapDialogFocus(scrim) {
+    scrim.addEventListener('keydown', event => {
+      if (!scrim.classList.contains('open') || event.key !== 'Tab') return;
+
+      const focusables = visibleFocusable(scrim);
+      if (!focusables.length) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
+  const detailDialog = document.getElementById('detailScrim');
+  const manualDialog = document.getElementById('manualScrim');
+
+  if (detailDialog) trapDialogFocus(detailDialog);
+  if (manualDialog) trapDialogFocus(manualDialog);
+
+  /* Capture focus before either modal opens. */
+  const createOrderBtn = document.getElementById('createOrderBtn');
+  if (createOrderBtn) {
+    createOrderBtn.addEventListener('click', rememberFocus, { capture: true });
+  }
+
+  document.addEventListener('click', event => {
+    const opener = event.target.closest('[data-open]');
+    if (opener) rememberFocus();
+  }, true);
+
+  /* Move focus into the manual-order dialog when it opens. */
+  if (manualDialog) {
+    const manualObserver = new MutationObserver(() => {
+      if (manualDialog.classList.contains('open')) {
+        const tableInput = document.getElementById('tableNumber');
+        if (tableInput) window.setTimeout(() => tableInput.focus(), 0);
+      }
+    });
+    manualObserver.observe(manualDialog, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  /* Restore focus after dialogs close. */
+  [detailDialog, manualDialog].forEach(dialog => {
+    if (!dialog) return;
+    let wasOpen = dialog.classList.contains('open');
+    const observer = new MutationObserver(() => {
+      const isOpen = dialog.classList.contains('open');
+      if (wasOpen && !isOpen) restoreFocus();
+      wasOpen = isOpen;
+    });
+    observer.observe(dialog, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  /* Proper keyboard interaction for the state tablist. */
+  const stateTabs = [...document.querySelectorAll('.state-tab[role="tab"]')];
+
+  function syncStateTabStops() {
+    stateTabs.forEach(tab => {
+      tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
+    });
+  }
+
+  stateTabs.forEach((tab, index) => {
+    tab.addEventListener('click', syncStateTabStops);
+
+    tab.addEventListener('keydown', event => {
+      let nextIndex = null;
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        nextIndex = (index + 1) % stateTabs.length;
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        nextIndex = (index - 1 + stateTabs.length) % stateTabs.length;
+      } else if (event.key === 'Home') {
+        nextIndex = 0;
+      } else if (event.key === 'End') {
+        nextIndex = stateTabs.length - 1;
+      }
+
+      if (nextIndex !== null) {
+        event.preventDefault();
+        const next = stateTabs[nextIndex];
+        next.focus();
+        next.click();
+      }
+    });
+  });
+
+  syncStateTabStops();
+
+  /* aria-current is kept in sync with visual bottom-navigation state. */
+  const homeNavA11y = document.getElementById('homeNav');
+  const myOrdersNavA11y = document.getElementById('myOrdersNav');
+
+  function syncCurrentPage() {
+    [homeNavA11y, myOrdersNavA11y].forEach(btn => {
+      if (!btn) return;
+      if (btn.classList.contains('active')) btn.setAttribute('aria-current', 'page');
+      else btn.removeAttribute('aria-current');
+    });
+  }
+
+  const bottomNav = document.querySelector('.bottom-nav');
+  if (bottomNav) {
+    new MutationObserver(syncCurrentPage).observe(bottomNav, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+  syncCurrentPage();
+
+  /* Generic radio-menu keyboard support for section/language dropdowns. */
+  function enhanceRadioMenu(trigger, menu, getOpenState, openMenu, closeMenu) {
+    if (!trigger || !menu) return;
+
+    const options = () => [...menu.querySelectorAll('[role="menuitemradio"]')];
+
+    function focusPreferred() {
+      const items = options();
+      const selected = items.find(item => item.getAttribute('aria-checked') === 'true');
+      (selected || items[0])?.focus();
+    }
+
+    trigger.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (!getOpenState()) openMenu();
+        window.setTimeout(focusPreferred, 0);
+      }
+    });
+
+    menu.addEventListener('keydown', event => {
+      const items = options();
+      const current = items.indexOf(document.activeElement);
+      if (!items.length) return;
+
+      let next = null;
+
+      if (event.key === 'ArrowDown') next = current < 0 ? 0 : (current + 1) % items.length;
+      if (event.key === 'ArrowUp') next = current < 0 ? items.length - 1 : (current - 1 + items.length) % items.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = items.length - 1;
+
+      if (next !== null) {
+        event.preventDefault();
+        items[next].focus();
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+        trigger.focus();
+      }
+    });
+  }
+
+  const languageTriggerA11y = document.getElementById('languageToggle');
+  const languageMenuA11y = document.getElementById('languageMenu');
+  const languageWrapA11y = document.getElementById('languageWrap');
+
+  enhanceRadioMenu(
+    languageTriggerA11y,
+    languageMenuA11y,
+    () => languageWrapA11y?.classList.contains('open'),
+    () => {
+      if (!languageWrapA11y?.classList.contains('open')) languageTriggerA11y?.click();
+    },
+    () => {
+      languageWrapA11y?.classList.remove('open');
+      languageTriggerA11y?.setAttribute('aria-expanded', 'false');
+    }
+  );
+
+  const sectionTriggerA11y = document.getElementById('sectionTrigger');
+  const sectionMenuA11y = document.getElementById('sectionMenu');
+  const sectionWrapA11y = document.getElementById('sectionMenuWrap');
+
+  enhanceRadioMenu(
+    sectionTriggerA11y,
+    sectionMenuA11y,
+    () => sectionWrapA11y?.classList.contains('open'),
+    () => {
+      if (!sectionWrapA11y?.classList.contains('open')) sectionTriggerA11y?.click();
+    },
+    () => {
+      sectionWrapA11y?.classList.remove('open');
+      sectionTriggerA11y?.setAttribute('aria-expanded', 'false');
+    }
+  );
+
+  /* My Orders Detailed / Compact menu: keyboard-complete menu behavior. */
+  document.addEventListener('keydown', event => {
+    const menu = document.getElementById('myOrdersViewMenu');
+    const trigger = document.getElementById('myOrdersViewTrigger');
+    if (!menu || !trigger) return;
+
+    if (document.activeElement === trigger &&
+        (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
+      event.preventDefault();
+      if (menu.hidden) trigger.click();
+      const items = [...menu.querySelectorAll('[role="menuitemradio"]')];
+      const selected = items.find(item => item.getAttribute('aria-checked') === 'true') || items[0];
+      window.setTimeout(() => selected?.focus(), 0);
+      return;
+    }
+
+    if (menu.hidden || !menu.contains(document.activeElement)) return;
+
+    const items = [...menu.querySelectorAll('[role="menuitemradio"]')];
+    const current = items.indexOf(document.activeElement);
+    let next = null;
+
+    if (event.key === 'ArrowDown') next = (current + 1) % items.length;
+    if (event.key === 'ArrowUp') next = (current - 1 + items.length) % items.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = items.length - 1;
+
+    if (next !== null) {
+      event.preventDefault();
+      items[next]?.focus();
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('open');
+      trigger.focus();
+    }
+  });
+})();
+</script>
 
 <script>
   if ('serviceWorker' in navigator) {

@@ -5,9 +5,12 @@
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
-  "background_color": "#F4F8EE",
-  "theme_color": "#F4F8EE",
-  "orientation": "portrait",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
   "icons": [
     {
       "src": "./icon-192.png",
@@ -21,9 +24,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "display_override": [
-    "fullscreen",
-    "standalone"
   ]
 }
