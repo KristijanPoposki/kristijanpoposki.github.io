@@ -4563,6 +4563,34 @@ html, body {
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+    /* Android Chrome edge-to-edge bottom navigation — v10 */
+    :root {
+      --bottom-nav-content-height: 82px;
+      --safe-bottom-max: env(safe-area-max-inset-bottom, 36px);
+    }
+
+    .bottom-nav {
+      box-sizing: border-box !important;
+      height: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max)) !important;
+      min-height: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max)) !important;
+      padding: 8px 24px var(--safe-bottom-max) !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) - var(--safe-bottom-max)) !important;
+      background: #FFFFFF !important;
+    }
+
+    main,
+    #mainContent {
+      padding-bottom: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max) + 16px) !important;
+    }
+
+    @media (display-mode: standalone) {
+      .bottom-nav {
+        bottom: calc(env(safe-area-inset-bottom, 0px) - var(--safe-bottom-max)) !important;
+        padding-bottom: var(--safe-bottom-max) !important;
+      }
+    }
+
 </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
