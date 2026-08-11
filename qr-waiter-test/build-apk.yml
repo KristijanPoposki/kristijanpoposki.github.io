@@ -1,0 +1,213 @@
+name: Build QR Waiter APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.13'
+          cache-provider: basic
+
+      - name: Install Android SDK 36
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
+
+      - name: Create Android TWA project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/res/mipmap-hdpi
+          mkdir -p app/src/main/res/mipmap-mdpi
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "QRWaiterTWA"
+          include(":app")
+          EOF
+
+          cat > build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.13.2' apply false
+          }
+          EOF
+
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          android.nonTransitiveRClass=true
+          EOF
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace 'com.kristijanpoposki.qrwaitertest'
+              compileSdk 36
+
+              defaultConfig {
+                  applicationId 'com.kristijanpoposki.qrwaitertest'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 1
+                  versionName '1.0-test'
+              }
+
+              signingConfigs {
+                  testRelease {
+                      storeFile file('../qrwaiter-test.jks')
+                      storePassword 'qrwaitertest'
+                      keyAlias 'qrwaiter'
+                      keyPassword 'qrwaitertest'
+                  }
+              }
+
+              buildTypes {
+                  debug {
+                      signingConfig signingConfigs.testRelease
+                  }
+              }
+          }
+
+          dependencies {
+              implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.1'
+          }
+          EOF
+
+          cat > app/src/main/res/values/colors.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="status_bar">#F4F8EE</color>
+              <color name="navigation_bar">#FFFFFF</color>
+          </resources>
+          EOF
+
+          cat > app/src/main/res/values/strings.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">QR Waiter Test</string>
+              <string name="launch_url">https://kristijanpoposki.github.io/qr-waiter-test/</string>
+          </resources>
+          EOF
+
+          cat > app/src/main/res/values/styles.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="LauncherActivityTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:windowIsTranslucent">true</item>
+                  <item name="android:windowBackground">@android:color/transparent</item>
+                  <item name="android:statusBarColor">@color/status_bar</item>
+                  <item name="android:navigationBarColor">@color/navigation_bar</item>
+                  <item name="android:windowLightStatusBar">true</item>
+                  <item name="android:windowLightNavigationBar">true</item>
+                  <item name="android:backgroundDimEnabled">false</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+              <application
+                  android:allowBackup="true"
+                  android:label="@string/app_name"
+                  android:supportsRtl="true"
+                  android:theme="@style/LauncherActivityTheme">
+
+                  <activity
+                      android:name="com.google.androidbrowserhelper.trusted.LauncherActivity"
+                      android:alwaysRetainTaskState="true"
+                      android:exported="true"
+                      android:label="@string/app_name"
+                      android:theme="@style/LauncherActivityTheme">
+
+                      <meta-data
+                          android:name="android.support.customtabs.trusted.DEFAULT_URL"
+                          android:value="@string/launch_url" />
+
+                      <meta-data
+                          android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
+                          android:resource="@color/status_bar" />
+
+                      <meta-data
+                          android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK"
+                          android:resource="@color/status_bar" />
+
+                      <meta-data
+                          android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR"
+                          android:resource="@color/navigation_bar" />
+
+                      <meta-data
+                          android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR_DARK"
+                          android:resource="@color/navigation_bar" />
+
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+
+                      <intent-filter android:autoVerify="true">
+                          <action android:name="android.intent.action.VIEW" />
+                          <category android:name="android.intent.category.DEFAULT" />
+                          <category android:name="android.intent.category.BROWSABLE" />
+                          <data
+                              android:scheme="https"
+                              android:host="kristijanpoposki.github.io"
+                              android:pathPrefix="/qr-waiter-test/" />
+                      </intent-filter>
+
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          echo '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' | base64 --decode > qrwaiter-test.jks
+
+      - name: Build signed debug APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: qr-waiter-test-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
