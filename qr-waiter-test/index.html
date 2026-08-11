@@ -5982,9 +5982,9 @@
 </script>
 
 <script>
-  /* Chromium/WebAPK can launch a manifest-fullscreen PWA with the camera
-     cutout letterboxed in black. A user-activated Fullscreen API request
-     makes Chromium re-apply viewport-fit=cover using short-edge cutout mode. */
+  /* Launch installed PWAs in standalone mode so Android paints the system
+     area with the app theme. On the first gesture, DOM fullscreen makes
+     Chromium re-apply viewport-fit=cover using short-edge cutout mode. */
   (() => {
     const installedApp =
       window.matchMedia('(display-mode: fullscreen)').matches ||
