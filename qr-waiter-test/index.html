@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#F4F8EE" />
   <meta name="color-scheme" content="light" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>QR Waiter Test</title>
   <style>
     :root {
@@ -4546,9 +4547,29 @@
       .topbar {
         padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important;
       }
+    }
 
-      /* Intentionally do NOT override bottom-nav:
-         preserve the fullscreen build that already reached the bottom. */
+    /* Android/Chrome edge-to-edge bottom navigation — v12.
+       Reserve the largest possible gesture inset once, then move the fixed
+       surface as the live inset changes. This keeps the white nav surface
+       painted through the physical bottom edge without layout thrashing. */
+    :root {
+      --bottom-nav-content-height: 82px;
+      --bottom-safe-area-max: env(safe-area-max-inset-bottom, 36px);
+    }
+
+    .bottom-nav {
+      box-sizing: border-box !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) - var(--bottom-safe-area-max)) !important;
+      height: calc(var(--bottom-nav-content-height) + var(--bottom-safe-area-max)) !important;
+      min-height: calc(var(--bottom-nav-content-height) + var(--bottom-safe-area-max)) !important;
+      padding: 8px 24px var(--bottom-safe-area-max) !important;
+      background: #FFFFFF !important;
+    }
+
+    main,
+    #mainContent {
+      padding-bottom: calc(var(--bottom-nav-content-height) + var(--bottom-safe-area-max) + 16px) !important;
     }
 
 </style>

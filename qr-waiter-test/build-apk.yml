@@ -165,6 +165,10 @@ jobs:
                           android:value="@string/launch_url" />
 
                       <meta-data
+                          android:name="android.support.customtabs.trusted.DISPLAY_MODE"
+                          android:value="sticky-immersive" />
+
+                      <meta-data
                           android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
                           android:resource="@color/status_bar" />
 

@@ -2,6 +2,7 @@
   "name": "QR Waiter Test",
   "short_name": "QR Waiter",
   "description": "Testing PWA for the QR Order waiter interface",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
