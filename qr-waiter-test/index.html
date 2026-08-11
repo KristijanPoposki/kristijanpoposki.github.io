@@ -4542,13 +4542,31 @@
       }
     }
 
-  </style>
+  
+/* Android standalone v9 */
+html, body {
+  margin: 0 !important;
+  min-height: 100% !important;
+  min-height: 100dvh !important;
+  background: #F4F8EE !important;
+  color-scheme: light !important;
+}
+.app-shell {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+@media (display-mode: standalone) {
+  .topbar { padding-top: 14px !important; }
+  .bottom-nav {
+    bottom: 0 !important;
+    background: #FFFFFF !important;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+</style>
 
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="QR Waiter">
 
 </head>
 <body>
