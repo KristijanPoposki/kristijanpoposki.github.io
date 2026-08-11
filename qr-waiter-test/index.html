@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#F4F8EE" />
   <meta name="color-scheme" content="light" />
-  <meta name="mobile-web-app-capable" content="yes" />
   <title>QR Waiter Test</title>
   <style>
     :root {
@@ -4514,11 +4513,12 @@
     }
 
   
-    /* Android PWA system-area fix:
-       use standalone mode + light system chrome instead of fullscreen,
-       which produced a black display-cutout strip on some Samsung devices. */
+    /* v11: keep fullscreen bottom behavior, fix only the top safe area */
     html,
     body {
+      margin: 0 !important;
+      min-height: 100% !important;
+      min-height: 100dvh !important;
       background: #F4F8EE !important;
       color-scheme: light !important;
     }
@@ -4526,75 +4526,38 @@
     .app-shell {
       min-height: 100vh !important;
       min-height: 100dvh !important;
+      background-color: #F4F8EE !important;
     }
 
-    /* The status bar is outside the web content in standalone mode.
-       Keep the content itself flush with the usable viewport. */
-    @media (display-mode: standalone) {
+    /* Paint the cutout/status-safe region with the same app background. */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top, 0px);
+      background: #F4F8EE;
+      z-index: 999999;
+      pointer-events: none;
+    }
+
+    @media (display-mode: fullscreen) {
       .topbar {
-        padding-top: 14px !important;
+        padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important;
       }
 
-      .bottom-nav {
-        bottom: 0 !important;
-        padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
-        background: #FFFFFF !important;
-      }
-    }
-
-  
-/* Android standalone v9 */
-html, body {
-  margin: 0 !important;
-  min-height: 100% !important;
-  min-height: 100dvh !important;
-  background: #F4F8EE !important;
-  color-scheme: light !important;
-}
-.app-shell {
-  min-height: 100vh !important;
-  min-height: 100dvh !important;
-}
-@media (display-mode: standalone) {
-  .topbar { padding-top: 14px !important; }
-  .bottom-nav {
-    bottom: 0 !important;
-    background: #FFFFFF !important;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-}
-
-    /* Android Chrome edge-to-edge bottom navigation — v10 */
-    :root {
-      --bottom-nav-content-height: 82px;
-      --safe-bottom-max: env(safe-area-max-inset-bottom, 36px);
-    }
-
-    .bottom-nav {
-      box-sizing: border-box !important;
-      height: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max)) !important;
-      min-height: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max)) !important;
-      padding: 8px 24px var(--safe-bottom-max) !important;
-      bottom: calc(env(safe-area-inset-bottom, 0px) - var(--safe-bottom-max)) !important;
-      background: #FFFFFF !important;
-    }
-
-    main,
-    #mainContent {
-      padding-bottom: calc(var(--bottom-nav-content-height) + var(--safe-bottom-max) + 16px) !important;
-    }
-
-    @media (display-mode: standalone) {
-      .bottom-nav {
-        bottom: calc(env(safe-area-inset-bottom, 0px) - var(--safe-bottom-max)) !important;
-        padding-bottom: var(--safe-bottom-max) !important;
-      }
+      /* Intentionally do NOT override bottom-nav:
+         preserve the fullscreen build that already reached the bottom. */
     }
 
 </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="QR Waiter">
 
 </head>
 <body>
