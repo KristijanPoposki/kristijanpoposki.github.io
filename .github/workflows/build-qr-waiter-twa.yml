@@ -35,12 +35,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Gradle 8.13
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: "8.13"
-          cache-provider: basic
-
       - name: Install Android SDK 36
         shell: bash
         run: |
@@ -255,6 +249,12 @@ jobs:
               </application>
           </manifest>
           EOF
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "8.13"
+          cache-provider: basic
 
       - name: Decode signing key
         shell: bash
