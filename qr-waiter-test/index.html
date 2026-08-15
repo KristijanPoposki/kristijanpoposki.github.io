@@ -4572,6 +4572,556 @@
       padding-bottom: calc(var(--bottom-nav-content-height) + var(--bottom-safe-area-max) + 16px) !important;
     }
 
+    /* =========================================================
+       New order menu builder
+       ========================================================= */
+
+    .app-shell.order-builder-mode,
+    .app-shell.order-builder-mode .topbar,
+    .app-shell.order-builder-mode #mainContent {
+      background: #F4F8EE !important;
+    }
+
+    .app-shell.order-builder-mode #mainContent {
+      padding: 8px 14px calc(196px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .order-builder {
+      width: 100%;
+    }
+
+    .order-builder-mode #searchToggle,
+    .order-builder-mode .active-search-chip {
+      display: none !important;
+    }
+
+    .order-builder-head {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0 15px;
+    }
+
+    .builder-back {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #D9E2D1;
+      border-radius: 16px;
+      background: #FFFFFF;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(69, 91, 51, .05);
+    }
+
+    .builder-back:focus-visible,
+    .menu-search-input:focus-visible,
+    .menu-category:focus-visible,
+    .menu-add:focus-visible,
+    .quantity-btn:focus-visible,
+    .draft-dock-review:focus-visible {
+      outline: 3px solid rgba(127, 180, 79, .28);
+      outline-offset: 2px;
+    }
+
+    .order-builder-title {
+      min-width: 0;
+    }
+
+    .order-builder-title small {
+      display: block;
+      margin-bottom: 2px;
+      color: #66804F;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .order-builder-title h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.05;
+      letter-spacing: -.04em;
+    }
+
+    .builder-guest {
+      max-width: 102px;
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid #DCE6D3;
+      border-radius: 999px;
+      background: #EAF4DF;
+      color: #476C2C;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    .builder-guest svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+
+    .menu-search-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .menu-search-wrap > svg {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      width: 19px;
+      height: 19px;
+      transform: translateY(-50%);
+      color: #697065;
+      pointer-events: none;
+    }
+
+    .menu-search-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 44px;
+      border: 1px solid #D8E1D1;
+      border-radius: 20px;
+      background: #FFFFFF;
+      color: #182014;
+      outline: none;
+      box-shadow: 0 3px 12px rgba(69, 91, 51, .045);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .menu-search-input::placeholder {
+      color: #8A9185;
+      font-weight: 600;
+    }
+
+    .menu-search-clear {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      transform: translateY(-50%);
+      border: 0;
+      border-radius: 50%;
+      background: #F0F4EC;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .menu-search-clear[hidden] {
+      display: none !important;
+    }
+
+    .menu-categories {
+      display: flex;
+      gap: 8px;
+      margin: 0 -14px 16px;
+      padding: 0 14px 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      scroll-snap-type: x proximity;
+    }
+
+    .menu-categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .menu-category {
+      flex: 0 0 auto;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid #D8E1D1;
+      border-radius: 999px;
+      background: #FFFFFF;
+      color: #596253;
+      cursor: pointer;
+      scroll-snap-align: start;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .menu-category.active {
+      border-color: var(--brand-dark);
+      background: var(--brand);
+      color: #26351B;
+      box-shadow: 0 4px 12px rgba(127, 180, 79, .20);
+    }
+
+    .menu-section + .menu-section {
+      margin-top: 22px;
+    }
+
+    .menu-section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 2px 9px;
+    }
+
+    .menu-section-head h2 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -.025em;
+    }
+
+    .menu-section-head span {
+      color: #7B8376;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .menu-items {
+      display: grid;
+      gap: 9px;
+    }
+
+    .menu-item-card {
+      min-height: 91px;
+      padding: 12px;
+      border: 1px solid #DFE6DA;
+      border-radius: 22px;
+      background: #FFFFFF;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      box-shadow: 0 5px 16px rgba(69, 91, 51, .045);
+    }
+
+    .menu-item-card.is-added {
+      border-color: #BAD59E;
+      box-shadow: 0 0 0 1px rgba(148, 199, 97, .16), 0 6px 16px rgba(69, 91, 51, .06);
+    }
+
+    .menu-item-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: #445B34;
+      background: #EDF5E5;
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .04em;
+    }
+
+    .menu-item-mark[data-tone="mains"] { background: #F6ECDC; color: #805D2A; }
+    .menu-item-mark[data-tone="sides"] { background: #F2F0DC; color: #6F6A2D; }
+    .menu-item-mark[data-tone="drinks"] { background: #E4F1F5; color: #396978; }
+    .menu-item-mark[data-tone="desserts"] { background: #F7E7ED; color: #825066; }
+
+    .menu-item-copy {
+      min-width: 0;
+    }
+
+    .menu-item-copy h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.2;
+      letter-spacing: -.01em;
+    }
+
+    .menu-item-copy p {
+      display: -webkit-box;
+      margin: 4px 0 7px;
+      overflow: hidden;
+      color: #777D73;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .menu-item-price {
+      color: #344329;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .menu-add {
+      min-width: 58px;
+      height: 38px;
+      padding: 0 13px;
+      border: 1px solid #AFCB94;
+      border-radius: 15px;
+      background: #EDF6E5;
+      color: #426B26;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .quantity-stepper {
+      height: 38px;
+      padding: 0 3px;
+      border: 1px solid #AFCB94;
+      border-radius: 15px;
+      background: #EDF6E5;
+      display: grid;
+      grid-template-columns: 31px 25px 31px;
+      align-items: center;
+    }
+
+    .quantity-btn {
+      width: 31px;
+      height: 31px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #355A20;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .quantity-btn:active {
+      background: #DCEBCF;
+    }
+
+    .quantity-value {
+      text-align: center;
+      color: #26391B;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .menu-empty {
+      padding: 44px 24px;
+      border: 1px dashed #CAD6C0;
+      border-radius: 24px;
+      background: rgba(255,255,255,.55);
+      text-align: center;
+      color: #6B7465;
+    }
+
+    .menu-empty strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #26331E;
+      font-size: 15px;
+    }
+
+    .draft-dock {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: calc(var(--bottom-nav-content-height) + env(safe-area-inset-bottom, 0px) + 9px);
+      width: min(calc(100% - 24px), 516px);
+      min-height: 78px;
+      padding: 10px;
+      transform: translateX(-50%);
+      border: 1px solid rgba(55, 75, 42, .16);
+      border-radius: 24px;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 14px 36px rgba(37, 51, 28, .18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .draft-dock[hidden] {
+      display: none !important;
+    }
+
+    .draft-dock-summary {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .draft-count-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      background: #E8F4D9;
+      color: #48702D;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .draft-dock-copy {
+      min-width: 0;
+    }
+
+    .draft-dock-copy strong,
+    .draft-dock-copy small {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .draft-dock-copy strong {
+      color: #25321D;
+      font-size: 13px;
+    }
+
+    .draft-dock-copy small {
+      margin-top: 3px;
+      color: #747C6F;
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .draft-dock-action {
+      text-align: right;
+    }
+
+    .draft-dock-total {
+      display: block;
+      margin: 0 2px 4px 0;
+      color: #26331E;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .draft-dock-review {
+      min-width: 82px;
+      height: 40px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 15px;
+      background: var(--brand);
+      color: #26351B;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .draft-dock-review:disabled {
+      background: #E8ECE4;
+      color: #969D91;
+      cursor: default;
+    }
+
+    .create-btn.active {
+      box-shadow: 0 0 0 4px #DDEECF, 0 10px 22px rgba(98, 132, 67, .28) !important;
+    }
+
+    .order-builder-mode .create-label {
+      color: var(--brand-deeper) !important;
+    }
+
+    .draft-context {
+      margin: 14px 0 4px;
+      padding: 11px 12px;
+      border: 1px solid #DCE6D3;
+      border-radius: 18px;
+      background: #F0F7E9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .draft-context strong {
+      font-size: 13px;
+    }
+
+    .draft-sheet-items {
+      margin-top: 13px;
+    }
+
+    .draft-line {
+      padding: 12px 0;
+      border-bottom: 1px solid #ECEFE9;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .draft-line:last-child {
+      border-bottom: 0;
+    }
+
+    .draft-line-copy strong,
+    .draft-line-copy small {
+      display: block;
+    }
+
+    .draft-line-copy strong {
+      font-size: 13px;
+    }
+
+    .draft-line-copy small {
+      margin-top: 4px;
+      color: #71796C;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .draft-line-controls {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+    }
+
+    .draft-note {
+      width: 100%;
+      min-height: 74px;
+      resize: vertical;
+      padding: 11px 12px;
+      border: 1px solid #D7DFD1;
+      border-radius: 17px;
+      background: #FAFCF8;
+      outline: none;
+      color: #25301F;
+      font: inherit;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .draft-note:focus {
+      border-color: var(--brand-dark);
+      box-shadow: 0 0 0 3px rgba(148, 199, 97, .16);
+    }
+
+    @media (max-width: 370px) {
+      .menu-item-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .menu-item-mark {
+        display: none;
+      }
+
+      .draft-dock-summary {
+        grid-template-columns: 34px minmax(0, 1fr);
+      }
+
+      .draft-count-badge {
+        width: 34px;
+        height: 40px;
+      }
+    }
+
 </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
@@ -4716,6 +5266,8 @@
 
     <main id="mainContent"></main>
 
+    <aside class="draft-dock" id="draftDock" aria-label="Current order" aria-live="polite" hidden></aside>
+
     <nav class="bottom-nav" aria-label="Main navigation">
       <button class="nav-btn active" id="homeNav" aria-label="Home" aria-current="page">
         <svg class="nav-icon nav-icon-home" viewBox="0 0 24 24" aria-hidden="true">
@@ -4782,9 +5334,8 @@
       </div>
 
       <div class="manual-preview">
-        <div class="manual-preview-head"><strong>Order draft</strong><span>2 items</span></div>
-        <div class="manual-item"><span>1 × Shopska salad</span><span>220 ден</span></div>
-        <div class="manual-item"><span>2 × Coca-Cola 0.25</span><span>240 ден</span></div>
+        <div class="manual-preview-head"><strong>Menu comes next</strong><span>Live draft</span></div>
+        <div class="manual-item"><span>Browse the menu and see every added item while you work.</span></div>
       </div>
 
       <div class="sheet-actions">
@@ -4792,6 +5343,10 @@
         <button class="btn btn-primary" id="continueManual">Continue to menu</button>
       </div>
     </section>
+  </div>
+
+  <div class="scrim" id="draftOrderScrim" role="dialog" aria-modal="true" aria-labelledby="draftOrderDialogTitle">
+    <section class="sheet" id="draftOrderSheet"></section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMessage"></span><button class="toast-action" id="toastAction" type="button" hidden></button></div>
@@ -4914,6 +5469,26 @@
       }
     ];
 
+    const menuCatalog = [
+      { id: 'shopska', category: 'Starters', code: 'SAL', name: 'Shopska salad', description: 'Tomato, cucumber, onion and white cheese', price: 220 },
+      { id: 'caesar', category: 'Starters', code: 'SAL', name: 'Caesar salad', description: 'Chicken, romaine, parmesan and house dressing', price: 420 },
+      { id: 'soup', category: 'Starters', code: 'SOUP', name: 'Soup of the day', description: 'Ask the kitchen for today’s selection', price: 160 },
+      { id: 'burger', category: 'Mains', code: 'MAIN', name: 'Classic Burger', description: 'Beef, cheddar, pickles and house sauce', price: 380 },
+      { id: 'pasta', category: 'Mains', code: 'MAIN', name: 'Chicken pasta', description: 'Creamy parmesan sauce and grilled chicken', price: 450 },
+      { id: 'steak', category: 'Mains', code: 'MAIN', name: 'Beef steak', description: 'Grilled beef steak with herb butter', price: 830 },
+      { id: 'margherita', category: 'Mains', code: 'PIZZA', name: 'Margherita', description: 'Tomato, mozzarella and fresh basil', price: 480 },
+      { id: 'fries', category: 'Sides', code: 'SIDE', name: 'French fries', description: 'Crispy fries with sea salt', price: 180 },
+      { id: 'vegetables', category: 'Sides', code: 'SIDE', name: 'Grilled vegetables', description: 'Seasonal vegetables and herbs', price: 320 },
+      { id: 'coke', category: 'Drinks', code: 'DRINK', name: 'Coca-Cola 0.25', description: 'Chilled glass bottle', price: 140 },
+      { id: 'water', category: 'Drinks', code: 'DRINK', name: 'Sparkling water', description: 'Chilled mineral water', price: 110 },
+      { id: 'skopsko', category: 'Drinks', code: 'BEER', name: 'Skopsko 0.33', description: 'Local lager, chilled bottle', price: 130 },
+      { id: 'lemonade', category: 'Drinks', code: 'DRINK', name: 'Fresh lemonade', description: 'Fresh lemon, mint and light syrup', price: 175 },
+      { id: 'pancakes', category: 'Desserts', code: 'SWEET', name: 'Pancakes', description: 'Chocolate cream, biscuit and berries', price: 330 },
+      { id: 'cheesecake', category: 'Desserts', code: 'SWEET', name: 'Cheesecake', description: 'Vanilla cheesecake with berry sauce', price: 290 }
+    ];
+
+    const menuCategories = ['All', ...new Set(menuCatalog.map(item => item.category))];
+
     const pageLoadedAt = Date.now();
     orders.forEach(order => { order.createdAt = pageLoadedAt - (order.age * 60_000); });
 
@@ -4922,6 +5497,12 @@
     let myOrdersViewMode = 'detailed';
     let selectedTable = null;
     let searchQuery = '';
+    let menuQuery = '';
+    let menuCategory = 'All';
+    let draftTable = null;
+    let draftGuestName = '';
+    let draftOrderNote = '';
+    const draftItems = new Map();
 
     const main = document.getElementById('mainContent');
     const topbar = document.querySelector('.topbar');
@@ -4937,9 +5518,14 @@
     const tabs = [...document.querySelectorAll('.state-tab')];
     const homeNav = document.getElementById('homeNav');
     const myOrdersNav = document.getElementById('myOrdersNav');
+    const createOrderBtn = document.getElementById('createOrderBtn');
+    const appShell = document.querySelector('.app-shell');
     const detailScrim = document.getElementById('detailScrim');
     const detailSheet = document.getElementById('detailSheet');
     const manualScrim = document.getElementById('manualScrim');
+    const draftDock = document.getElementById('draftDock');
+    const draftOrderScrim = document.getElementById('draftOrderScrim');
+    const draftOrderSheet = document.getElementById('draftOrderSheet');
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
     const toastAction = document.getElementById('toastAction');
@@ -5171,11 +5757,21 @@
       return acceptedTableTile(order);
     }
 
+    function setOrderBuilderChrome(active) {
+      appShell.classList.toggle('order-builder-mode', active);
+      createOrderBtn.classList.toggle('active', active);
+      if (active) createOrderBtn.setAttribute('aria-current', 'page');
+      else createOrderBtn.removeAttribute('aria-current');
+      draftDock.hidden = !active;
+      if (!active && draftOrderScrim.classList.contains('open')) closeDraftOrder();
+    }
+
     function renderHome() {
       currentView = 'home';
+      setOrderBuilderChrome(false);
       if (myOrdersHeaderFilter) myOrdersHeaderFilter.hidden = true;
       closeMyOrdersViewMenu();
-      document.querySelector('.app-shell').classList.remove('my-orders-mode');
+      appShell.classList.remove('my-orders-mode');
       homeNav.classList.add('active');
       myOrdersNav.classList.remove('active');
       document.querySelector('.state-nav-wrap').style.display = '';
@@ -5200,12 +5796,13 @@
 
     function renderMyOrders() {
       currentView = 'myOrders';
+      setOrderBuilderChrome(false);
       if (myOrdersHeaderFilter) myOrdersHeaderFilter.hidden = false;
       syncMyOrdersViewFilter();
       homeNav.classList.remove('active');
       myOrdersNav.classList.add('active');
       document.querySelector('.state-nav-wrap').style.display = 'none';
-      document.querySelector('.app-shell').classList.add('my-orders-mode');
+      appShell.classList.add('my-orders-mode');
       sectionTriggerLabel.textContent = sectionTriggerText(sectionSelect.value);
       sectionTrigger.disabled = false;
       sectionTrigger.removeAttribute('aria-disabled');
@@ -5287,6 +5884,334 @@
 
 
       bindCardActions();
+    }
+
+    function draftEntries() {
+      return menuCatalog
+        .filter(item => (draftItems.get(item.id) || 0) > 0)
+        .map(item => ({ ...item, qty: draftItems.get(item.id) }));
+    }
+
+    function draftItemCount() {
+      return [...draftItems.values()].reduce((sum, qty) => sum + qty, 0);
+    }
+
+    function draftTotal() {
+      return draftEntries().reduce((sum, item) => sum + (item.price * item.qty), 0);
+    }
+
+    function menuTone(category) {
+      return category.toLowerCase();
+    }
+
+    function menuItemMarkup(item) {
+      const qty = draftItems.get(item.id) || 0;
+      const control = qty
+        ? `<div class="quantity-stepper" aria-label="Quantity for ${escapeHtml(item.name)}">
+            <button class="quantity-btn" type="button" data-menu-adjust="${item.id}" data-delta="-1" aria-label="Remove one ${escapeHtml(item.name)}">−</button>
+            <span class="quantity-value" aria-label="Quantity ${qty}">${qty}</span>
+            <button class="quantity-btn" type="button" data-menu-adjust="${item.id}" data-delta="1" aria-label="Add one more ${escapeHtml(item.name)}">+</button>
+          </div>`
+        : `<button class="menu-add" type="button" data-menu-adjust="${item.id}" data-delta="1" aria-label="Add ${escapeHtml(item.name)}">Add</button>`;
+
+      return `<article class="menu-item-card${qty ? ' is-added' : ''}">
+        <span class="menu-item-mark" data-tone="${menuTone(item.category)}" aria-hidden="true">${escapeHtml(item.code)}</span>
+        <div class="menu-item-copy">
+          <h3>${escapeHtml(item.name)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <span class="menu-item-price">${money(item.price)}</span>
+        </div>
+        ${control}
+      </article>`;
+    }
+
+    function menuResultsMarkup() {
+      const query = menuQuery.trim().toLowerCase();
+      const matches = menuCatalog.filter(item => {
+        const inCategory = menuCategory === 'All' || item.category === menuCategory;
+        const searchable = `${item.name} ${item.description} ${item.category}`.toLowerCase();
+        return inCategory && (!query || searchable.includes(query));
+      });
+
+      if (!matches.length) {
+        return `<div class="menu-empty"><strong>No menu items found</strong><span>Try another search or category.</span></div>`;
+      }
+
+      const categories = menuCategory === 'All'
+        ? menuCategories.slice(1).filter(category => matches.some(item => item.category === category))
+        : [menuCategory];
+
+      return categories.map(category => {
+        const items = matches.filter(item => item.category === category);
+        return `<section class="menu-section" aria-labelledby="menu-${category.toLowerCase()}">
+          <div class="menu-section-head">
+            <h2 id="menu-${category.toLowerCase()}">${escapeHtml(category)}</h2>
+            <span>${items.length} item${items.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="menu-items">${items.map(menuItemMarkup).join('')}</div>
+        </section>`;
+      }).join('');
+    }
+
+    function renderMenuResults() {
+      const results = document.getElementById('menuResults');
+      if (results) results.innerHTML = menuResultsMarkup();
+    }
+
+    function renderDraftDock() {
+      if (currentView !== 'newOrder') {
+        draftDock.hidden = true;
+        return;
+      }
+
+      const entries = draftEntries();
+      const count = draftItemCount();
+      const itemNames = entries.slice(0, 2).map(item => `${item.qty}× ${item.name}`).join(' · ');
+      const moreCount = Math.max(0, entries.length - 2);
+      const summary = count
+        ? `${itemNames}${moreCount ? ` · +${moreCount} more` : ''}`
+        : 'Tap Add beside a menu item';
+
+      draftDock.hidden = false;
+      draftDock.innerHTML = `
+        <div class="draft-dock-summary">
+          <span class="draft-count-badge">${count}</span>
+          <div class="draft-dock-copy">
+            <strong>${count ? `${count} item${count === 1 ? '' : 's'} · Table ${draftTable}` : 'Your order is empty'}</strong>
+            <small>${escapeHtml(summary)}</small>
+          </div>
+        </div>
+        <div class="draft-dock-action">
+          <span class="draft-dock-total">${money(draftTotal())}</span>
+          <button class="draft-dock-review" id="draftDockReview" type="button" ${count ? '' : 'disabled'}>Review</button>
+        </div>`;
+
+      document.getElementById('draftDockReview')?.addEventListener('click', openDraftOrder);
+    }
+
+    function adjustDraftItem(id, delta) {
+      const item = menuCatalog.find(entry => entry.id === id);
+      if (!item) return;
+      const next = Math.max(0, Math.min(99, (draftItems.get(id) || 0) + delta));
+      if (next) draftItems.set(id, next);
+      else draftItems.delete(id);
+      renderMenuResults();
+      renderDraftDock();
+      if (draftOrderScrim.classList.contains('open')) {
+        if (draftItemCount()) renderDraftOrderSheet();
+        else closeDraftOrder();
+      }
+    }
+
+    function renderOrderBuilder() {
+      if (!draftTable && !selectedTable) {
+        openManual();
+        return;
+      }
+
+      currentView = 'newOrder';
+      setOrderBuilderChrome(true);
+      appShell.classList.remove('my-orders-mode');
+      if (myOrdersHeaderFilter) myOrdersHeaderFilter.hidden = true;
+      closeMyOrdersViewMenu();
+      homeNav.classList.remove('active');
+      myOrdersNav.classList.remove('active');
+      document.querySelector('.state-nav-wrap').style.display = 'none';
+      topbar.classList.remove('searching');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      activeSearchChip.hidden = true;
+      sectionTrigger.disabled = false;
+      sectionTrigger.classList.remove('is-disabled');
+      sectionTriggerLabel.textContent = sectionTriggerText(sectionSelect.value);
+
+      const guestMarkup = draftGuestName
+        ? `<button class="builder-guest" id="editOrderContext" type="button" title="Edit table or guest" aria-label="Edit table or guest. Guest ${escapeHtml(draftGuestName)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"/></svg>
+            ${escapeHtml(draftGuestName)}
+          </button>`
+        : '<button class="builder-guest" id="editOrderContext" type="button" aria-label="Edit table or guest">Edit table</button>';
+
+      main.innerHTML = `<section class="order-builder" aria-labelledby="orderBuilderTitle">
+        <div class="order-builder-head">
+          <button class="builder-back" id="builderBack" type="button" aria-label="Back to orders">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="order-builder-title">
+            <small>New order</small>
+            <h1 id="orderBuilderTitle">Table ${draftTable}</h1>
+          </div>
+          ${guestMarkup}
+        </div>
+
+        <div class="menu-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input class="menu-search-input" id="menuSearch" type="search" inputmode="search" autocomplete="off" value="${escapeHtml(menuQuery)}" placeholder="Search the menu…" aria-label="Search menu items" />
+          <button class="menu-search-clear" id="menuSearchClear" type="button" aria-label="Clear menu search" ${menuQuery ? '' : 'hidden'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+
+        <div class="menu-categories" id="menuCategories" aria-label="Menu categories">
+          ${menuCategories.map(category => `<button class="menu-category${menuCategory === category ? ' active' : ''}" type="button" data-menu-category="${escapeHtml(category)}" aria-pressed="${menuCategory === category}">${escapeHtml(category)}</button>`).join('')}
+        </div>
+
+        <div id="menuResults">${menuResultsMarkup()}</div>
+      </section>`;
+
+      document.getElementById('builderBack').addEventListener('click', () => {
+        renderHome();
+        if (draftItemCount()) showToast('Draft kept for Table ' + draftTable);
+      });
+      document.getElementById('editOrderContext').addEventListener('click', () => {
+        selectedTable = draftTable;
+        document.getElementById('tableNumber').value = String(draftTable);
+        document.getElementById('guestName').value = draftGuestName;
+        openManual({ force: true });
+      });
+
+      const menuSearch = document.getElementById('menuSearch');
+      const menuSearchClear = document.getElementById('menuSearchClear');
+      menuSearch.addEventListener('input', () => {
+        menuQuery = menuSearch.value;
+        menuSearchClear.hidden = !menuQuery;
+        renderMenuResults();
+      });
+      menuSearchClear.addEventListener('click', () => {
+        menuQuery = '';
+        menuSearch.value = '';
+        menuSearchClear.hidden = true;
+        renderMenuResults();
+        menuSearch.focus();
+      });
+
+      document.getElementById('menuCategories').addEventListener('click', event => {
+        const button = event.target.closest('[data-menu-category]');
+        if (!button) return;
+        menuCategory = button.dataset.menuCategory;
+        document.querySelectorAll('[data-menu-category]').forEach(categoryButton => {
+          const active = categoryButton === button;
+          categoryButton.classList.toggle('active', active);
+          categoryButton.setAttribute('aria-pressed', String(active));
+        });
+        renderMenuResults();
+      });
+
+      document.getElementById('menuResults').addEventListener('click', event => {
+        const button = event.target.closest('[data-menu-adjust]');
+        if (!button) return;
+        adjustDraftItem(button.dataset.menuAdjust, Number(button.dataset.delta));
+      });
+
+      renderDraftDock();
+    }
+
+    function renderDraftOrderSheet() {
+      const entries = draftEntries();
+      const count = draftItemCount();
+      draftOrderSheet.innerHTML = `
+        <div class="grabber"></div>
+        <div class="sheet-head">
+          <div>
+            <h2 id="draftOrderDialogTitle">Review order</h2>
+            <p>Check quantities before sending.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close="draft-order" aria-label="Close order review">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <div class="draft-context">
+          <strong>Table ${draftTable}</strong>
+          <span>${count} item${count === 1 ? '' : 's'} · ${money(draftTotal())}</span>
+        </div>
+        <div class="draft-sheet-items">
+          ${entries.map(item => `<div class="draft-line">
+            <div class="draft-line-copy">
+              <strong>${escapeHtml(item.name)}</strong>
+              <small>${money(item.price * item.qty)}</small>
+            </div>
+            <div class="draft-line-controls">
+              <div class="quantity-stepper" aria-label="Quantity for ${escapeHtml(item.name)}">
+                <button class="quantity-btn" type="button" data-draft-adjust="${item.id}" data-delta="-1" aria-label="Remove one ${escapeHtml(item.name)}">−</button>
+                <span class="quantity-value">${item.qty}</span>
+                <button class="quantity-btn" type="button" data-draft-adjust="${item.id}" data-delta="1" aria-label="Add one more ${escapeHtml(item.name)}">+</button>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+        <div class="form-section">
+          <label class="form-label" for="draftOrderNote">ORDER NOTE · OPTIONAL</label>
+          <textarea class="draft-note" id="draftOrderNote" placeholder="e.g. Drinks first, allergy note…">${escapeHtml(draftOrderNote)}</textarea>
+        </div>
+        <div class="sheet-actions">
+          <button class="btn btn-secondary" id="continueAdding" type="button">Continue adding</button>
+          <button class="btn btn-primary" id="sendDraftOrder" type="button">Send · ${money(draftTotal())}</button>
+        </div>`;
+
+      draftOrderSheet.querySelector('[data-close="draft-order"]').addEventListener('click', closeDraftOrder);
+      draftOrderSheet.querySelectorAll('[data-draft-adjust]').forEach(button => {
+        button.addEventListener('click', () => adjustDraftItem(button.dataset.draftAdjust, Number(button.dataset.delta)));
+      });
+      document.getElementById('draftOrderNote').addEventListener('input', event => {
+        draftOrderNote = event.target.value;
+      });
+      document.getElementById('continueAdding').addEventListener('click', () => {
+        closeDraftOrder();
+        document.getElementById('menuSearch')?.focus();
+      });
+      document.getElementById('sendDraftOrder').addEventListener('click', sendDraftOrder);
+    }
+
+    function openDraftOrder() {
+      if (!draftItemCount()) return;
+      renderDraftOrderSheet();
+      draftOrderScrim.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      draftOrderSheet.querySelector('[data-close="draft-order"]')?.focus();
+    }
+
+    function closeDraftOrder() {
+      draftOrderScrim.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function sendDraftOrder() {
+      const entries = draftEntries();
+      if (!entries.length || !draftTable) return;
+
+      const nextNumber = Math.max(...orders
+        .filter(order => order.id.startsWith('A-'))
+        .map(order => Number(displayOrderNumber(order.id)) || 0)) + 1;
+      const order = {
+        id: `A-${nextNumber}`,
+        state: 'accepted',
+        section: sectionSelect.value === 'all' ? 'terrace' : sectionSelect.value,
+        table: draftTable,
+        waiter: 'Marko',
+        age: 0,
+        createdAt: Date.now(),
+        total: draftTotal(),
+        note: draftOrderNote.trim(),
+        items: entries.map(item => ({
+          qty: item.qty,
+          name: item.name,
+          price: item.price * item.qty,
+          note: ''
+        }))
+      };
+
+      orders.unshift(order);
+      draftItems.clear();
+      draftOrderNote = '';
+      menuQuery = '';
+      menuCategory = 'All';
+      draftTable = null;
+      draftGuestName = '';
+      selectedTable = null;
+      document.getElementById('tableNumber').value = '';
+      document.getElementById('guestName').value = '';
+      closeDraftOrder();
+      renderMyOrders();
+      showToast(`Order #${displayOrderNumber(order.id)} created for Table ${order.table}`);
     }
 
     function emptyMarkup(title, text) {
@@ -5421,7 +6346,7 @@
         </div>
         <div class="detail-section">
           <h3>Order note</h3>
-          <div style="padding:12px;border:1px solid var(--line);border-radius:18px;background:#f8f8f6;font-size:12px;color:var(--muted);">Bring drinks first. Guest asked for extra napkins.</div>
+          <div style="padding:12px;border:1px solid var(--line);border-radius:18px;background:#f8f8f6;font-size:12px;color:var(--muted);">${order.note ? escapeHtml(order.note) : 'No order note.'}</div>
         </div>
         <div class="sheet-actions">
           <button class="btn btn-secondary" data-close="detail">Close</button>
@@ -5464,7 +6389,12 @@
       document.body.style.overflow = '';
     }
 
-    function openManual() {
+    function openManual({ force = false } = {}) {
+      if (draftTable && !force) {
+        renderOrderBuilder();
+        if (draftItemCount()) showToast(`Draft restored for Table ${draftTable}`);
+        return;
+      }
       manualScrim.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -5490,6 +6420,12 @@
       showToast.timer = setTimeout(() => toast.classList.remove('show'), duration);
     }
 
+    function renderCurrentView() {
+      if (currentView === 'newOrder') renderOrderBuilder();
+      else if (currentView === 'myOrders') renderMyOrders();
+      else renderHome();
+    }
+
     function openSearch() {
       topbar.classList.add('searching');
       searchToggle.setAttribute('aria-expanded', 'true');
@@ -5503,7 +6439,7 @@
         searchQuery = '';
         orderSearch.value = '';
         searchClear.classList.remove('visible');
-        currentView === 'home' ? renderHome() : renderMyOrders();
+        renderCurrentView();
       } else {
         updateSearchChip();
       }
@@ -5517,7 +6453,7 @@
         searchClear.classList.toggle('visible', Boolean(searchQuery));
         updateSearchChip();
         updateSectionAvailability();
-        currentView === 'home' ? renderHome() : renderMyOrders();
+        renderCurrentView();
       }, 100);
     }
 
@@ -5563,7 +6499,7 @@
       });
       closeSectionMenu();
       updateCounts();
-      currentView === 'home' ? renderHome() : renderMyOrders();
+      renderCurrentView();
     }));
 
     document.addEventListener('click', e => {
@@ -5590,7 +6526,7 @@
       searchClear.classList.remove('visible');
       updateSearchChip();
       updateSectionAvailability();
-      currentView === 'home' ? renderHome() : renderMyOrders();
+      renderCurrentView();
     });
 
     tabs.forEach((tab, index) => tab.addEventListener('click', () => {
@@ -5619,7 +6555,7 @@
         item.setAttribute('aria-checked', String(active));
       });
       updateCounts();
-      currentView === 'home' ? renderHome() : renderMyOrders();
+      renderCurrentView();
     });
 
     homeNav.addEventListener('click', renderHome);
@@ -5654,16 +6590,18 @@
     });
 
     myOrdersNav.addEventListener('click', renderMyOrders);
-    document.getElementById('createOrderBtn').addEventListener('click', openManual);
+    createOrderBtn.addEventListener('click', openManual);
 
     detailScrim.addEventListener('click', e => { if (e.target === detailScrim) closeDetail(); });
     manualScrim.addEventListener('click', e => { if (e.target === manualScrim) closeManual(); });
+    draftOrderScrim.addEventListener('click', e => { if (e.target === draftOrderScrim) closeDraftOrder(); });
     document.querySelectorAll('[data-close="manual"]').forEach(b => b.addEventListener('click', closeManual));
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         if (detailScrim.classList.contains('open')) closeDetail();
         else if (manualScrim.classList.contains('open')) closeManual();
+        else if (draftOrderScrim.classList.contains('open')) closeDraftOrder();
         else if (languageWrap.classList.contains('open')) closeLanguageMenu();
         else if (sectionMenuWrap.classList.contains('open')) closeSectionMenu();
         else if (topbar.classList.contains('searching')) closeSearch({ clear: false });
@@ -5683,8 +6621,10 @@
         tableNumberInput.focus();
         return;
       }
+      draftTable = selectedTable;
+      draftGuestName = document.getElementById('guestName').value.trim();
       closeManual();
-      showToast(`Table ${selectedTable} selected · menu step would open next`);
+      renderOrderBuilder();
     });
 
     updateCounts();
@@ -5763,9 +6703,11 @@
 
   const detailDialog = document.getElementById('detailScrim');
   const manualDialog = document.getElementById('manualScrim');
+  const draftOrderDialog = document.getElementById('draftOrderScrim');
 
   if (detailDialog) trapDialogFocus(detailDialog);
   if (manualDialog) trapDialogFocus(manualDialog);
+  if (draftOrderDialog) trapDialogFocus(draftOrderDialog);
 
   /* Capture focus before either modal opens. */
   const createOrderBtn = document.getElementById('createOrderBtn');
@@ -5775,7 +6717,8 @@
 
   document.addEventListener('click', event => {
     const opener = event.target.closest('[data-open]');
-    if (opener) rememberFocus();
+    const draftOpener = event.target.closest('#draftDockReview');
+    if (opener || draftOpener) rememberFocus();
   }, true);
 
   /* Move focus into the manual-order dialog when it opens. */
@@ -5790,7 +6733,7 @@
   }
 
   /* Restore focus after dialogs close. */
-  [detailDialog, manualDialog].forEach(dialog => {
+  [detailDialog, manualDialog, draftOrderDialog].forEach(dialog => {
     if (!dialog) return;
     let wasOpen = dialog.classList.contains('open');
     const observer = new MutationObserver(() => {
@@ -5840,9 +6783,10 @@
   /* aria-current is kept in sync with visual bottom-navigation state. */
   const homeNavA11y = document.getElementById('homeNav');
   const myOrdersNavA11y = document.getElementById('myOrdersNav');
+  const createOrderNavA11y = document.getElementById('createOrderBtn');
 
   function syncCurrentPage() {
-    [homeNavA11y, myOrdersNavA11y].forEach(btn => {
+    [homeNavA11y, createOrderNavA11y, myOrdersNavA11y].forEach(btn => {
       if (!btn) return;
       if (btn.classList.contains('active')) btn.setAttribute('aria-current', 'page');
       else btn.removeAttribute('aria-current');
