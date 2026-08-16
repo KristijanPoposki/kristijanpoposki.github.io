@@ -4579,7 +4579,15 @@
     .app-shell.order-builder-mode,
     .app-shell.order-builder-mode .topbar,
     .app-shell.order-builder-mode #mainContent {
-      background: #F4F8EE !important;
+      background: #F1F2EF !important;
+    }
+
+    body.order-builder-page {
+      background: #F1F2EF !important;
+    }
+
+    body.order-builder-page::before {
+      background: #F1F2EF !important;
     }
 
     .app-shell.order-builder-mode #mainContent {
@@ -5759,6 +5767,8 @@
 
     function setOrderBuilderChrome(active) {
       appShell.classList.toggle('order-builder-mode', active);
+      document.body.classList.toggle('order-builder-page', active);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', active ? '#F1F2EF' : '#F4F8EE');
       createOrderBtn.classList.toggle('active', active);
       if (active) createOrderBtn.setAttribute('aria-current', 'page');
       else createOrderBtn.removeAttribute('aria-current');
