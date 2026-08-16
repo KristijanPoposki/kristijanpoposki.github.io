@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#F1F2EF" />
+  <meta name="theme-color" content="#F2F3F0" />
   <meta name="color-scheme" content="light" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>QR Waiter Test</title>
@@ -5134,6 +5134,8 @@
     html,
     body,
     body::before,
+    body.order-builder-page,
+    body.order-builder-page::before,
     .app-shell,
     .topbar,
     #mainContent,
@@ -5156,10 +5158,10 @@
     .draft-dock-review:not(:disabled),
     .menu-category.active,
     .choice.selected {
-      border-color: #111111 !important;
-      background: #111111 !important;
+      border-color: #1C201A !important;
+      background: #1C201A !important;
       color: #FFFFFF !important;
-      box-shadow: 0 5px 14px rgba(17, 17, 17, .18) !important;
+      box-shadow: 0 5px 14px rgba(28, 32, 26, .14) !important;
     }
 
     .btn-primary:active,
@@ -5168,13 +5170,13 @@
     .draft-dock-review:not(:disabled):active,
     .menu-category.active:active,
     .choice.selected:active {
-      border-color: #2B2B2B !important;
-      background: #2B2B2B !important;
+      border-color: #292E26 !important;
+      background: #292E26 !important;
       color: #FFFFFF !important;
     }
 
     .create-btn.active {
-      box-shadow: 0 0 0 4px #D9DCD6, 0 10px 22px rgba(17, 17, 17, .25) !important;
+      box-shadow: 0 0 0 4px #D9DCD6, 0 10px 22px rgba(28, 32, 26, .20) !important;
     }
 
     .btn-primary:focus-visible,
@@ -5183,15 +5185,15 @@
     .draft-dock-review:focus-visible,
     .menu-category.active:focus-visible,
     .choice.selected:focus-visible {
-      outline: 3px solid rgba(17, 17, 17, .22) !important;
+      outline: 3px solid rgba(28, 32, 26, .20) !important;
       outline-offset: 2px;
     }
 
     /* Black navigation selection: active state, plus, Home and My Orders only. */
     .state-slider,
     .create-btn {
-      border-color: #111111 !important;
-      background: #111111 !important;
+      border-color: #1C201A !important;
+      background: #1C201A !important;
       color: #FFFFFF !important;
     }
 
@@ -5202,28 +5204,147 @@
     .nav-btn.active {
       border-color: transparent !important;
       background: transparent !important;
-      color: #111111 !important;
+      color: #1C201A !important;
       box-shadow: none !important;
     }
 
     .nav-btn.active span {
-      color: #111111 !important;
+      color: #1C201A !important;
     }
 
     .nav-btn.active .nav-icon {
-      color: #111111 !important;
+      color: #1C201A !important;
     }
 
     .nav-btn.active .nav-icon-fill-shape {
-      fill: #111111 !important;
+      fill: #1C201A !important;
     }
 
     .nav-btn.active .nav-icon-outline {
-      stroke: #111111 !important;
+      stroke: #1C201A !important;
     }
 
     .nav-btn.active .nav-icon-orders .nav-icon-inner-lines {
       stroke: #FFFFFF !important;
+    }
+
+    /* Calm modern palette experiment. */
+    :root {
+      --bg: #F2F3F0;
+      --surface: #FCFCFA;
+      --surface-2: #F7F8F5;
+      --text: #1B1E19;
+      --muted: #72776E;
+      --line: #E1E4DE;
+      --line-strong: #D5DAD2;
+      --brand: #7F9E66;
+      --brand-dark: #6C8A56;
+      --brand-deeper: #567443;
+      --brand-soft: #E8EFE2;
+      --brand-soft-2: #DCE6D4;
+      --pending-bg: #F3E7C6;
+      --pending-text: #69521A;
+      --accepted-bg: #DFEADB;
+      --accepted-text: #44603B;
+      --delivery-bg: #E2E8EC;
+      --delivery-text: #475B68;
+      --kds-bg: #E8E3EB;
+      --kds-text: #5E5265;
+    }
+
+    html,
+    body,
+    body::before,
+    .app-shell,
+    .topbar,
+    #mainContent,
+    .app-shell.my-orders-mode,
+    .app-shell.my-orders-mode .topbar,
+    .app-shell.my-orders-mode #mainContent,
+    .app-shell.my-orders-mode .my-orders-page,
+    .app-shell.my-orders-mode .my-orders-header,
+    .app-shell.my-orders-mode .my-orders-group,
+    .app-shell.order-builder-mode,
+    .app-shell.order-builder-mode .topbar,
+    .app-shell.order-builder-mode #mainContent {
+      background: #F2F3F0 !important;
+    }
+
+    .order-card,
+    .menu-item-card,
+    .sheet,
+    .draft-dock,
+    .bottom-nav,
+    .accepted-table-tile {
+      border-color: #E1E4DE !important;
+      background: #FCFCFA !important;
+      box-shadow: 0 6px 18px rgba(24, 28, 22, .055) !important;
+    }
+
+    .topbar {
+      box-shadow: none !important;
+    }
+
+    .state-nav {
+      border-color: #DCE0DA !important;
+      background: #E7EAE4 !important;
+      box-shadow: none !important;
+    }
+
+    .section-trigger,
+    .language-toggle,
+    .search-toggle,
+    .menu-search-input,
+    .text-input,
+    .table-number-input,
+    .menu-category:not(.active),
+    .builder-back,
+    .icon-btn,
+    .btn-secondary {
+      border-color: #E1E4DE !important;
+      background: #FCFCFA !important;
+      color: #1B1E19 !important;
+      box-shadow: none !important;
+    }
+
+    .quantity-stepper {
+      border-color: #CAD7C0 !important;
+      background: #EDF2E9 !important;
+    }
+
+    .quantity-btn {
+      color: #516A3F !important;
+    }
+
+    .menu-item-card.is-added {
+      border-color: #B9C9AD !important;
+      box-shadow: 0 0 0 1px rgba(127, 158, 102, .10), 0 6px 18px rgba(24, 28, 22, .055) !important;
+    }
+
+    .status-pending { background: #F3E7C6 !important; color: #69521A !important; }
+    .status-accepted { background: #DFEADB !important; color: #44603B !important; }
+    .status-delivery { background: #E2E8EC !important; color: #475B68 !important; }
+    .status-kds { background: #E8E3EB !important; color: #5E5265 !important; }
+
+    .age-attention {
+      background: #F2E8CE !important;
+      color: #69521A !important;
+    }
+
+    .age-calm {
+      background: #E8EDE4 !important;
+      color: #536149 !important;
+    }
+
+    .kitchen-status-label.is-ready {
+      border-color: #C8D8BC !important;
+      background: #E5EEDF !important;
+      color: #44603B !important;
+    }
+
+    .toast {
+      background: #627B4E !important;
+      color: #FFFFFF !important;
     }
 
 </style>
