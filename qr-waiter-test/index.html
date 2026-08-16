@@ -5255,6 +5255,8 @@
     html,
     body,
     body::before,
+    body.order-builder-page,
+    body.order-builder-page::before,
     .app-shell,
     .topbar,
     #mainContent,
@@ -5345,6 +5347,41 @@
     .toast {
       background: #627B4E !important;
       color: #FFFFFF !important;
+    }
+
+    /* Sticky top navigation with controls blended into the page canvas. */
+    .app-shell {
+      overflow-x: clip !important;
+    }
+
+    .topbar,
+    .app-shell.my-orders-mode .topbar,
+    .app-shell.order-builder-mode .topbar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+      background: #F2F3F0 !important;
+      box-shadow: none !important;
+    }
+
+    .topbar .section-trigger,
+    .topbar .language-toggle,
+    .topbar .search-toggle,
+    .topbar .search-back,
+    .topbar .search-clear,
+    .topbar .my-orders-view-trigger,
+    .topbar .state-nav,
+    .topbar .state-tab:not(.active) {
+      background: #F2F3F0 !important;
+      box-shadow: none !important;
+    }
+
+    .topbar .section-trigger,
+    .topbar .language-toggle,
+    .topbar .search-toggle,
+    .topbar .my-orders-view-trigger,
+    .topbar .state-nav {
+      border-color: #DCE0DA !important;
     }
 
 </style>
