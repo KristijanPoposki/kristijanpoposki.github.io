@@ -5149,42 +5149,63 @@
       background: #F1F2EF !important;
     }
 
-    /* Black-primary branch: primary buttons use a high-contrast neutral style. */
-    .btn-primary,
-    .create-btn,
-    .menu-add,
-    .draft-dock-review:not(:disabled),
-    .menu-category.active,
-    .choice.selected {
+    /* Black-controls version: every visible control button is black. */
+    .black-buttons-version button:not(.card-main) {
       border-color: #111111 !important;
       background: #111111 !important;
       color: #FFFFFF !important;
       box-shadow: 0 5px 14px rgba(17, 17, 17, .18) !important;
     }
 
-    .btn-primary:active,
-    .create-btn:active,
-    .menu-add:active,
-    .draft-dock-review:not(:disabled):active,
-    .menu-category.active:active,
-    .choice.selected:active {
+    .black-buttons-version button:not(.card-main) span,
+    .black-buttons-version button:not(.card-main) small,
+    .black-buttons-version button:not(.card-main) svg {
+      color: inherit !important;
+    }
+
+    .black-buttons-version button:not(.card-main):hover,
+    .black-buttons-version button:not(.card-main):active {
       border-color: #2B2B2B !important;
       background: #2B2B2B !important;
       color: #FFFFFF !important;
     }
 
-    .create-btn.active {
+    .black-buttons-version button:not(.card-main):disabled {
+      border-color: #111111 !important;
+      background: #111111 !important;
+      color: #FFFFFF !important;
+      opacity: .45;
+    }
+
+    .black-buttons-version .create-btn.active {
       box-shadow: 0 0 0 4px #D9DCD6, 0 10px 22px rgba(17, 17, 17, .25) !important;
     }
 
-    .btn-primary:focus-visible,
-    .create-btn:focus-visible,
-    .menu-add:focus-visible,
-    .draft-dock-review:focus-visible,
-    .menu-category.active:focus-visible,
-    .choice.selected:focus-visible {
+    .black-buttons-version button:not(.card-main):focus-visible {
       outline: 3px solid rgba(17, 17, 17, .22) !important;
       outline-offset: 2px;
+    }
+
+    .black-buttons-version .bottom-nav .nav-btn span,
+    .black-buttons-version .nav-btn.active span {
+      color: #FFFFFF !important;
+    }
+
+    .black-buttons-version .nav-btn .nav-icon-outline,
+    .black-buttons-version .nav-btn.active .nav-icon-outline {
+      stroke: #FFFFFF !important;
+    }
+
+    .black-buttons-version .nav-btn.active .nav-icon-fill-shape {
+      fill: #FFFFFF !important;
+    }
+
+    .black-buttons-version .nav-btn.active .nav-icon-inner-lines {
+      stroke: #111111 !important;
+    }
+
+    .black-buttons-version .create-label {
+      color: #111111 !important;
     }
 
 </style>
@@ -5196,7 +5217,7 @@
   <meta name="apple-mobile-web-app-title" content="QR Waiter">
 
 </head>
-<body>
+<body class="black-buttons-version">
   <div class="app-shell">
     <header class="topbar">
       <div class="restaurant-row" id="restaurantHeader">
