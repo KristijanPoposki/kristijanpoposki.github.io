@@ -5189,32 +5189,41 @@
 
     /* Black navigation selection: active state, plus, Home and My Orders only. */
     .state-slider,
-    .create-btn,
-    .nav-btn.active {
+    .create-btn {
       border-color: #111111 !important;
       background: #111111 !important;
       color: #FFFFFF !important;
     }
 
-    .state-tab.active,
-    .nav-btn.active span {
+    .state-tab.active {
       color: #FFFFFF !important;
+    }
+
+    .nav-btn.active {
+      border-color: transparent !important;
+      background: transparent !important;
+      color: #111111 !important;
+      box-shadow: none !important;
+    }
+
+    .nav-btn.active span {
+      color: #111111 !important;
     }
 
     .nav-btn.active .nav-icon {
-      color: #FFFFFF !important;
+      color: #111111 !important;
     }
 
     .nav-btn.active .nav-icon-fill-shape {
-      fill: #FFFFFF !important;
+      fill: #111111 !important;
     }
 
     .nav-btn.active .nav-icon-outline {
-      stroke: #FFFFFF !important;
+      stroke: #111111 !important;
     }
 
     .nav-btn.active .nav-icon-orders .nav-icon-inner-lines {
-      stroke: #111111 !important;
+      stroke: #FFFFFF !important;
     }
 
 </style>
