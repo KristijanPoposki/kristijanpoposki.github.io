@@ -5384,9 +5384,42 @@
       border-color: #DCE0DA !important;
     }
 
-    .topbar .state-nav,
-    .topbar .state-tab:not(.active) {
+    .state-nav,
+    .state-tab:not(.active) {
       background: #FFFFFF !important;
+    }
+
+    .state-nav {
+      border-color: #DCE0DA !important;
+    }
+
+    .create-nav-item {
+      position: relative;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 3px;
+    }
+
+    .create-nav-item .create-btn {
+      width: 44px !important;
+      height: 44px !important;
+      margin: 0 !important;
+      align-self: center !important;
+      border-width: 0 !important;
+    }
+
+    .create-nav-item .create-btn svg {
+      width: 22px !important;
+      height: 22px !important;
+    }
+
+    .create-nav-item .create-label {
+      position: static !important;
+      color: #62675F !important;
+      font-size: 11px !important;
+      line-height: 1 !important;
     }
 
 </style>
@@ -5520,16 +5553,17 @@
         </button>
       </div>
 
-      <div class="state-nav-wrap" aria-label="Order states">
-        <nav class="state-nav" role="tablist">
-          <span class="state-slider" aria-hidden="true"></span>
-          <button class="state-tab active" data-state="pending" role="tab" aria-selected="true" tabindex="0">Pending</button>
-          <button class="state-tab" data-state="accepted" role="tab" aria-selected="false" tabindex="-1">Accepted</button>
-          <button class="state-tab" data-state="delivery" role="tab" aria-selected="false" tabindex="-1">Delivery</button>
-          <button class="state-tab" data-state="kds" role="tab" aria-selected="false" tabindex="-1">KDS</button>
-        </nav>
-      </div>
     </header>
+
+    <div class="state-nav-wrap" aria-label="Order states">
+      <nav class="state-nav" role="tablist">
+        <span class="state-slider" aria-hidden="true"></span>
+        <button class="state-tab active" data-state="pending" role="tab" aria-selected="true" tabindex="0">Pending</button>
+        <button class="state-tab" data-state="accepted" role="tab" aria-selected="false" tabindex="-1">Accepted</button>
+        <button class="state-tab" data-state="delivery" role="tab" aria-selected="false" tabindex="-1">Delivery</button>
+        <button class="state-tab" data-state="kds" role="tab" aria-selected="false" tabindex="-1">KDS</button>
+      </nav>
+    </div>
 
     <main id="mainContent"></main>
 
@@ -5547,7 +5581,7 @@
         <span>Home</span>
       </button>
 
-      <div style="position:relative; display:grid; place-items:center; height:58px;">
+      <div class="create-nav-item">
         <button class="create-btn" id="createOrderBtn" aria-label="Create manual order">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </button>
