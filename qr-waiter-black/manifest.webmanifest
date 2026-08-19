@@ -1,5 +1,5 @@
 {
-  "name": "QR Waiter Test",
+  "name": "QR Waiter",
   "short_name": "QR Waiter",
   "description": "Testing PWA for the QR Order waiter interface",
   "id": "./",
@@ -9,8 +9,8 @@
   "display_override": [
     "standalone"
   ],
-  "background_color": "#F2F3F0",
-  "theme_color": "#F2F3F0",
+  "background_color": "#F4F4F4",
+  "theme_color": "#F4F4F4",
   "icons": [
     {
       "src": "./icon-192.png",

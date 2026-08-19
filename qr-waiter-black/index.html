@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#F2F3F0" />
+  <meta name="theme-color" content="#F4F4F4" />
   <meta name="color-scheme" content="light" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>QR Waiter Test</title>
+  <title>QR Waiter</title>
   <style>
     :root {
       --bg: #f4f4f1;
@@ -5430,6 +5430,564 @@
       line-height: 1.1 !important;
     }
 
+    /* V19 home redesign: calmer neutral canvas, compact filters and denser cards. */
+    :root {
+      --outer: #ECECEC;
+      --bg: #F4F4F4;
+      --surface: #FFFFFF;
+      --text: #111111;
+      --muted: #656565;
+      --line: #D7D7D7;
+      --badge: #DCE6F2;
+      --badge-text: #243447;
+      --bottom-nav-content-height: 76px;
+    }
+
+    html,
+    body,
+    body::before,
+    body.order-builder-page,
+    body.order-builder-page::before {
+      background: var(--outer) !important;
+    }
+
+    .app-shell,
+    .app-shell.my-orders-mode,
+    .app-shell.order-builder-mode,
+    #mainContent,
+    .app-shell.my-orders-mode #mainContent,
+    .app-shell.order-builder-mode #mainContent,
+    .app-shell.my-orders-mode .my-orders-page,
+    .app-shell.my-orders-mode .my-orders-header,
+    .app-shell.my-orders-mode .my-orders-group {
+      background: var(--bg) !important;
+    }
+
+    .app-shell {
+      min-height: 100dvh;
+      padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .08) !important;
+    }
+
+    .topbar,
+    .app-shell.my-orders-mode .topbar,
+    .app-shell.order-builder-mode .topbar {
+      position: relative !important;
+      top: auto !important;
+      z-index: 20 !important;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px !important;
+      background: var(--bg) !important;
+      box-shadow: none !important;
+    }
+
+    .brand-row {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .restaurant-brand {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .restaurant-brand-kicker {
+      margin-bottom: 3px;
+      color: #707070;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .restaurant-brand-name {
+      color: #111;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -.015em;
+      white-space: nowrap;
+    }
+
+    .e-waiter-logo {
+      grid-column: 2;
+      justify-self: center;
+      display: block;
+      width: auto;
+      height: 40px;
+      max-width: 120px;
+      object-fit: contain;
+    }
+
+    .profile-toggle {
+      grid-column: 3;
+      justify-self: end;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 0;
+      border-radius: 16px;
+      background: transparent;
+      color: #111;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .profile-toggle svg { width: 23px; height: 23px; }
+
+    #restaurantHeader.compact-control-row {
+      position: relative;
+      min-height: 32px !important;
+      margin-top: 4px;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
+
+    .state-menu-wrap,
+    #restaurantHeader .restaurant-copy {
+      position: relative;
+      min-width: 0;
+    }
+
+    #restaurantHeader .restaurant-copy { justify-self: end; }
+
+    .state-menu-trigger,
+    #restaurantHeader .section-trigger {
+      min-width: 0 !important;
+      min-height: 30px !important;
+      height: 30px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #111 !important;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 16px !important;
+      line-height: 1.2;
+      font-weight: 850 !important;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+    }
+
+    .state-menu-trigger svg,
+    #restaurantHeader .section-trigger svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: #4D4D4D;
+    }
+
+    .state-dropdown,
+    #restaurantHeader .section-menu {
+      position: absolute !important;
+      top: calc(100% + 8px) !important;
+      z-index: 45 !important;
+      min-width: 180px !important;
+      margin: 0 !important;
+      padding: 8px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 18px !important;
+      background: #FFF !important;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, .10) !important;
+    }
+
+    .state-dropdown {
+      left: 0;
+      display: none;
+    }
+
+    .state-menu-wrap.open .state-dropdown { display: block; }
+
+    #restaurantHeader .section-menu {
+      right: 0 !important;
+      left: auto !important;
+    }
+
+    .state-option,
+    #restaurantHeader .section-option {
+      width: 100%;
+      min-height: 42px !important;
+      padding: 0 12px !important;
+      border: 0 !important;
+      border-radius: 12px !important;
+      background: transparent !important;
+      color: #111 !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+
+    #restaurantHeader .section-option small,
+    #restaurantHeader .section-check { display: none !important; }
+
+    .state-option.active,
+    #restaurantHeader .section-option.active {
+      background: #1B1B1B !important;
+      color: #FFF !important;
+    }
+
+    .header-actions { display: contents !important; }
+    .header-actions > .search-toggle,
+    .header-actions > .language-wrap {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .my-orders-header-filter[hidden] { display: none !important; }
+    .my-orders-header-filter:not([hidden]) {
+      position: absolute !important;
+      top: 16px;
+      right: 64px;
+      z-index: 24;
+      display: block !important;
+    }
+
+    .state-nav-wrap { display: none !important; }
+
+    .topbar.searching .brand-row,
+    .topbar.searching #restaurantHeader { display: none !important; }
+
+    #mainContent {
+      padding: 10px 14px 18px !important;
+    }
+
+    .order-list { gap: 10px !important; }
+
+    .order-card,
+    .app-shell.my-orders-mode .order-card {
+      overflow: hidden;
+      border: 1px solid var(--line) !important;
+      border-radius: 22px !important;
+      background: var(--surface) !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .04) !important;
+    }
+
+    .order-card .card-main {
+      padding: 12px !important;
+      background: transparent !important;
+    }
+
+    .order-card .card-top {
+      grid-template-columns: auto minmax(0, 1fr) auto !important;
+      gap: 10px !important;
+      align-items: center !important;
+    }
+
+    .order-card .table-badge {
+      min-width: 68px !important;
+      height: 38px !important;
+      padding: 0 10px !important;
+      border: 0 !important;
+      border-radius: 20px !important;
+      background: var(--badge) !important;
+      color: var(--badge-text) !important;
+      box-shadow: none !important;
+      gap: 7px !important;
+    }
+
+    .order-card .table-badge svg {
+      width: 18px !important;
+      height: 18px !important;
+      color: var(--badge-text) !important;
+    }
+
+    .order-card .table-badge span {
+      color: var(--badge-text) !important;
+      font-size: 19px !important;
+      line-height: 1 !important;
+      font-weight: 800 !important;
+    }
+
+    .order-card .delivery-table {
+      background: #F0E4DB !important;
+      color: #6A4D3A !important;
+    }
+
+    .order-card .delivery-table svg,
+    .order-card .delivery-table span { color: #6A4D3A !important; }
+
+    .order-card .order-id strong {
+      font-size: 15px !important;
+      font-weight: 800 !important;
+    }
+
+    .order-card .age {
+      min-width: 52px !important;
+      height: 28px !important;
+      padding: 0 8px !important;
+      border: 0 !important;
+      border-radius: 16px !important;
+      display: grid !important;
+      place-items: center;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      box-shadow: none !important;
+    }
+
+    .order-card .age-calm {
+      background: #F2F2F2 !important;
+      color: #555 !important;
+    }
+
+    .order-card .age-attention {
+      background: #F3E7C6 !important;
+      color: #69521A !important;
+    }
+
+    .order-card .age-overdue {
+      background: #F3DEDC !important;
+      color: #7B3028 !important;
+    }
+
+    .order-card.order-attention,
+    .order-card.order-overdue {
+      border-color: var(--line) !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .04) !important;
+    }
+
+    .order-card .card-content {
+      margin-top: 11px !important;
+      gap: 8px !important;
+    }
+
+    .order-card .item-line {
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      gap: 12px !important;
+      font-size: 14px !important;
+      line-height: 1.3 !important;
+    }
+
+    .order-card .item-name,
+    .order-card .item-price { font-weight: 700 !important; }
+    .order-card .qty { font-weight: 800 !important; }
+    .order-card .item-note {
+      margin-top: 2px !important;
+      color: var(--muted) !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+
+    .order-card .card-bottom {
+      margin-top: 10px !important;
+      padding-top: 10px !important;
+      border-top: 1px solid #EEE !important;
+      justify-content: flex-end !important;
+      gap: 8px !important;
+      font-size: 14px !important;
+    }
+
+    .order-card .card-actions { padding: 0 12px 12px !important; }
+
+    .order-card .btn-accept {
+      min-height: 44px !important;
+      height: 44px !important;
+      border-color: #1B1B1B !important;
+      border-radius: 14px !important;
+      background: #1B1B1B !important;
+      color: #FFF !important;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, .11) !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+
+    .bottom-nav {
+      position: fixed !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: 0 !important;
+      z-index: 30 !important;
+      width: min(100%, 540px) !important;
+      height: calc(var(--bottom-nav-content-height) + env(safe-area-inset-bottom, 0px)) !important;
+      min-height: calc(var(--bottom-nav-content-height) + env(safe-area-inset-bottom, 0px)) !important;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+      transform: translateX(-50%) !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: rgba(244, 244, 244, .96) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: grid !important;
+      grid-template-columns: repeat(5, 1fr) !important;
+      align-items: start !important;
+      gap: 0 !important;
+    }
+
+    .bottom-nav .nav-btn {
+      width: 48px !important;
+      min-width: 48px !important;
+      height: 48px !important;
+      min-height: 48px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 14px !important;
+      background: transparent !important;
+      color: #666 !important;
+      box-shadow: none !important;
+      display: grid !important;
+      place-items: center;
+    }
+
+    .bottom-nav .nav-btn.active { color: #111 !important; }
+    .bottom-nav .nav-btn > span:not(.bill-badge) { display: none !important; }
+    .bottom-nav .nav-icon,
+    .bottom-nav .nav-btn > svg { width: 24px !important; height: 24px !important; }
+
+    .bottom-nav .create-nav-item {
+      width: auto !important;
+      height: 54px !important;
+      min-height: 54px !important;
+      display: grid !important;
+      place-items: center !important;
+    }
+
+    .bottom-nav .create-btn {
+      width: 54px !important;
+      height: 54px !important;
+      min-height: 54px !important;
+      margin: 0 auto !important;
+      border: 0 !important;
+      border-radius: 50% !important;
+      background: #1B1B1B !important;
+      color: #FFF !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .14) !important;
+    }
+
+    .bottom-nav .create-btn svg { width: 26px !important; height: 26px !important; }
+    .bottom-nav .create-label { display: none !important; }
+
+    .bill-nav { position: relative; }
+    .bill-badge {
+      position: absolute;
+      top: 4px;
+      right: 3px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      border: 2px solid #FFF;
+      border-radius: 999px;
+      background: #B83C35;
+      color: #FFF;
+      display: grid !important;
+      place-items: center;
+      font-size: 9px;
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .profile-overlay,
+    .bill-panel-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      background: rgba(0, 0, 0, .28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
+    }
+
+    .profile-overlay.show,
+    .bill-panel-overlay.show { opacity: 1; pointer-events: auto; }
+
+    .profile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 60;
+      width: min(88vw, 320px);
+      height: 100dvh;
+      background: #FFF;
+      box-shadow: -16px 0 34px rgba(0, 0, 0, .16);
+      transform: translateX(100%);
+      transition: transform .22s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-drawer.show { transform: translateX(0); }
+    .profile-drawer-head {
+      padding: calc(18px + env(safe-area-inset-top, 0px)) 18px 16px;
+      border-bottom: 1px solid #EEE;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-user { display: flex; align-items: center; gap: 12px; }
+    .profile-avatar { width: 44px; height: 44px; border-radius: 14px; background: #1B1B1B; color: #FFF; display: grid; place-items: center; font-size: 14px; font-weight: 800; }
+    .profile-copy strong, .profile-copy span { display: block; }
+    .profile-copy strong { font-size: 15px; font-weight: 800; }
+    .profile-copy span { margin-top: 3px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .profile-close { width: 38px; height: 38px; border: 0; border-radius: 12px; background: #F5F5F5; display: grid; place-items: center; cursor: pointer; }
+    .profile-drawer-body { padding: 16px; overflow: auto; }
+    .profile-section + .profile-section { margin-top: 18px; }
+    .profile-section h3 { margin: 0 0 10px; color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+    .profile-language-grid { display: grid; gap: 8px; }
+    .profile-language,
+    .profile-action { width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: 14px; background: #FFF; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-size: 14px; }
+    .profile-language { font-weight: 800; }
+    .profile-action { font-weight: 700; }
+    .profile-language.active { border-color: #1B1B1B; background: #1B1B1B; color: #FFF; }
+
+    .bill-panel {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 60;
+      width: min(100%, 540px);
+      padding: 10px 14px calc(18px + env(safe-area-inset-bottom, 0px));
+      border-radius: 24px 24px 0 0;
+      background: #FFF;
+      box-shadow: 0 -18px 40px rgba(0, 0, 0, .16);
+      transform: translate(-50%, 100%);
+      transition: transform .22s ease;
+    }
+
+    .bill-panel.show { transform: translate(-50%, 0); }
+    .bill-handle { width: 38px; height: 4px; margin: 0 auto 12px; border-radius: 999px; background: #D8D8D8; }
+    .bill-panel-head { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .bill-panel-head strong { font-size: 17px; font-weight: 850; }
+    .bill-close { width: 38px; height: 38px; border: 0; border-radius: 12px; background: #F3F3F3; display: grid; place-items: center; cursor: pointer; }
+    .bill-list { display: grid; gap: 9px; }
+    .bill-request { padding: 12px; border: 1px solid #DEDEDE; border-radius: 17px; background: #FAFAFA; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 11px; }
+    .bill-table { width: 46px; height: 38px; border-radius: 16px; background: var(--badge); color: var(--badge-text); display: grid; place-items: center; font-size: 16px; font-weight: 850; }
+    .bill-copy strong, .bill-copy span { display: block; }
+    .bill-copy strong { font-size: 14px; font-weight: 800; }
+    .bill-copy span { margin-top: 3px; color: #666; font-size: 12px; font-weight: 650; }
+    .bill-open { min-height: 38px; padding: 0 13px; border: 0; border-radius: 12px; background: #1B1B1B; color: #FFF; font-size: 12px; font-weight: 800; cursor: pointer; }
+
+    @media (max-width: 370px) {
+      .restaurant-brand-name { font-size: 15px; }
+      .e-waiter-logo { height: 38px; }
+      .brand-row { gap: 6px; }
+    }
+
 </style>
 
   <link rel="manifest" href="./manifest.webmanifest">
@@ -5442,7 +6000,30 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div class="restaurant-row" id="restaurantHeader">
+      <div class="brand-row">
+        <div class="restaurant-brand" aria-label="Restaurant Ambrozija">
+          <span class="restaurant-brand-kicker">Restaurant</span>
+          <span class="restaurant-brand-name">Ambrozija</span>
+        </div>
+        <img class="e-waiter-logo" src="./e-waiter-logo.png" alt="E waiter">
+        <button class="profile-toggle" id="profileToggle" type="button" aria-label="Open profile and language settings" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.4-4 4.2-6 8-6s6.6 2 8 6"></path></svg>
+        </button>
+      </div>
+
+      <div class="restaurant-row compact-control-row" id="restaurantHeader">
+        <div class="state-menu-wrap" id="stateMenuWrap">
+          <button class="state-menu-trigger" id="stateMenuTrigger" type="button" aria-label="Change order state" aria-haspopup="menu" aria-expanded="false">
+            <span id="stateMenuLabel">Pending orders</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
+          </button>
+          <div class="state-dropdown" id="stateDropdown" role="menu" aria-label="Order state">
+            <button class="state-option active" type="button" data-state-target="pending" role="menuitemradio" aria-checked="true">Pending</button>
+            <button class="state-option" type="button" data-state-target="accepted" role="menuitemradio" aria-checked="false">Accepted</button>
+            <button class="state-option" type="button" data-state-target="delivery" role="menuitemradio" aria-checked="false">Delivery</button>
+            <button class="state-option" type="button" data-state-target="kds" role="menuitemradio" aria-checked="false">KDS</button>
+          </div>
+        </div>
         <div class="restaurant-copy">
           <div class="section-menu-wrap" id="sectionMenuWrap">
             <button class="section-trigger" id="sectionTrigger" aria-label="Change restaurant section" aria-haspopup="menu" aria-expanded="false">
@@ -5589,6 +6170,12 @@
         <span>Home</span>
       </button>
 
+      <button class="nav-btn" id="bottomSearchNav" type="button" aria-label="Search orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path>
+        </svg>
+      </button>
+
       <div class="create-nav-item">
         <button class="create-btn" id="createOrderBtn" aria-label="Create manual order">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -5609,8 +6196,59 @@
         </svg>
         <span>My Orders</span>
       </button>
+
+      <button class="nav-btn bill-nav" id="billRequestsNav" type="button" aria-label="Bill requests, 2 active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8"></path>
+          <path d="M10 21h4"></path>
+        </svg>
+        <span class="bill-badge">2</span>
+      </button>
     </nav>
   </div>
+
+  <div class="profile-overlay" id="profileOverlay"></div>
+  <aside class="profile-drawer" id="profileDrawer" aria-label="Profile and settings" aria-hidden="true">
+    <div class="profile-drawer-head">
+      <div class="profile-user">
+        <span class="profile-avatar">KP</span>
+        <div class="profile-copy"><strong>Kristijan</strong><span>Waiter</span></div>
+      </div>
+      <button class="profile-close" id="profileClose" type="button" aria-label="Close profile settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <div class="profile-drawer-body">
+      <section class="profile-section">
+        <h3>Language</h3>
+        <div class="profile-language-grid">
+          <button class="profile-language active" type="button" data-profile-language="mk">Macedonian <span>MK</span></button>
+          <button class="profile-language" type="button" data-profile-language="sq">Albanian <span>SQ</span></button>
+        </div>
+      </section>
+      <section class="profile-section">
+        <h3>Profile</h3>
+        <button class="profile-action" type="button">Account <span>›</span></button>
+        <button class="profile-action" type="button">Section access <span>›</span></button>
+        <button class="profile-action" type="button">Log out <span>›</span></button>
+      </section>
+    </div>
+  </aside>
+
+  <div class="bill-panel-overlay" id="billPanelOverlay"></div>
+  <section class="bill-panel" id="billPanel" aria-label="Bill requests" aria-hidden="true">
+    <div class="bill-handle"></div>
+    <div class="bill-panel-head">
+      <strong>Bill requests</strong>
+      <button class="bill-close" id="billPanelClose" type="button" aria-label="Close bill requests">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <div class="bill-list">
+      <div class="bill-request"><div class="bill-table">8</div><div class="bill-copy"><strong>Bill requested</strong><span>2 min ago</span></div><button class="bill-open" type="button">Open</button></div>
+      <div class="bill-request"><div class="bill-table">4</div><div class="bill-copy"><strong>Bill requested</strong><span>5 min ago</span></div><button class="bill-open" type="button">Open</button></div>
+    </div>
+  </section>
 
   <div class="scrim" id="detailScrim" role="dialog" aria-modal="true" aria-labelledby="detailDialogTitle">
     <section class="sheet" id="detailSheet"></section>
@@ -5679,7 +6317,7 @@
         ]
       },
       {
-        id: 'A-181', state: 'pending', section: 'terrace', table: 4, waiter: 'Marko', age: 12, total: 2240,
+        id: 'A-181', state: 'pending', section: 'terrace', table: 4, waiter: 'Marko', age: 9, total: 2240,
         items: [
           {qty: 2, name: 'Beef steak', price: 1660, note: 'Medium'},
           {qty: 1, name: 'Grilled vegetables', price: 320, note: ''},
@@ -5687,14 +6325,14 @@
         ]
       },
       {
-        id: 'A-179', state: 'pending', section: 'inside', table: 21, waiter: 'Marko', age: 4, total: 760,
+        id: 'A-179', state: 'pending', section: 'terrace', table: 21, waiter: 'Marko', age: 11, total: 760,
         items: [
           {qty: 1, name: 'Margherita', price: 480, note: ''},
           {qty: 2, name: 'Orange juice', price: 280, note: ''}
         ]
       },
       {
-        id: 'A-178', state: 'pending', section: 'garden', table: 32, waiter: 'Stefan', age: 9, total: 890,
+        id: 'A-178', state: 'pending', section: 'terrace', table: 32, waiter: 'Stefan', age: 13, total: 890,
         items: [
           {qty: 1, name: 'Club sandwich', price: 520, note: ''},
           {qty: 1, name: 'Greek salad', price: 230, note: ''},
@@ -5702,7 +6340,7 @@
         ]
       },
       {
-        id: 'A-176', state: 'pending', section: 'terrace', table: 1, waiter: 'Elena', age: 18, total: 610,
+        id: 'A-176', state: 'pending', section: 'terrace', table: 1, waiter: 'Elena', age: 16, total: 610,
         items: [
           {qty: 1, name: 'Pancakes', price: 330, note: 'No nuts'},
           {qty: 2, name: 'Espresso', price: 280, note: ''}
@@ -5915,6 +6553,7 @@
     }
 
     function ageMeta(age) {
+      if (age >= 12) return { cls: 'age-overdue', card: 'order-overdue', label: `${age} min` };
       if (age >= 8) return { cls: 'age-attention', card: 'order-attention', label: `${age} min` };
       return { cls: 'age-calm', card: '', label: `${age} min` };
     }
@@ -5955,7 +6594,7 @@
         const card = node.closest('.order-card');
         if (card) {
           card.classList.toggle('order-attention', meta.card === 'order-attention');
-          card.classList.remove('order-overdue');
+          card.classList.toggle('order-overdue', meta.card === 'order-overdue');
         }
       });
     }
@@ -6093,13 +6732,7 @@
       }
       const list = visibleOrders();
 
-      if (activeState === 'accepted') {
-        main.innerHTML = list.length
-          ? `<div class="accepted-table-grid">${list.map(acceptedTableTile).join('')}</div>`
-          : emptyMarkup('No accepted tables', 'There are no accepted orders for the selected section.');
-      } else {
-        main.innerHTML = `<div class="order-list">${list.length ? list.map(o => cardMarkup(o)).join('') : emptyMarkup('No orders here', 'There are no orders in this state for the selected section.')}</div>`;
-      }
+      main.innerHTML = `<div class="order-list">${list.length ? list.map(o => cardMarkup(o)).join('') : emptyMarkup('No orders here', 'There are no orders in this state for the selected section.')}</div>`;
 
       bindCardActions();
     }
@@ -7233,6 +7866,126 @@
     }
   });
 })();
+</script>
+
+<script>
+  (() => {
+    const stateMenuWrap = document.getElementById('stateMenuWrap');
+    const stateMenuTrigger = document.getElementById('stateMenuTrigger');
+    const stateMenuLabel = document.getElementById('stateMenuLabel');
+    const stateOptions = [...document.querySelectorAll('[data-state-target]')];
+    const stateTabs = [...document.querySelectorAll('.state-tab[data-state]')];
+    const appShell = document.querySelector('.app-shell');
+
+    const stateLabels = {
+      pending: 'Pending orders',
+      accepted: 'Accepted orders',
+      delivery: 'Delivery orders',
+      kds: 'KDS orders'
+    };
+
+    function closeStateMenu() {
+      stateMenuWrap?.classList.remove('open');
+      stateMenuTrigger?.setAttribute('aria-expanded', 'false');
+    }
+
+    function syncStateMenu() {
+      const activeTab = stateTabs.find(tab => tab.classList.contains('active')) || stateTabs[0];
+      const activeState = activeTab?.dataset.state || 'pending';
+      if (stateMenuLabel) stateMenuLabel.textContent = stateLabels[activeState];
+      stateOptions.forEach(option => {
+        const active = option.dataset.stateTarget === activeState;
+        option.classList.toggle('active', active);
+        option.setAttribute('aria-checked', String(active));
+      });
+    }
+
+    stateMenuTrigger?.addEventListener('click', event => {
+      event.stopPropagation();
+      const open = stateMenuWrap.classList.toggle('open');
+      stateMenuTrigger.setAttribute('aria-expanded', String(open));
+      document.getElementById('sectionMenuWrap')?.classList.remove('open');
+      document.getElementById('sectionTrigger')?.setAttribute('aria-expanded', 'false');
+    });
+
+    stateOptions.forEach(option => option.addEventListener('click', () => {
+      stateTabs.find(tab => tab.dataset.state === option.dataset.stateTarget)?.click();
+      syncStateMenu();
+      closeStateMenu();
+    }));
+
+    stateTabs.forEach(tab => new MutationObserver(syncStateMenu).observe(tab, {
+      attributes: true,
+      attributeFilter: ['class', 'aria-selected']
+    }));
+
+    document.addEventListener('click', event => {
+      if (!stateMenuWrap?.contains(event.target)) closeStateMenu();
+    });
+
+    const bottomSearchNav = document.getElementById('bottomSearchNav');
+    const searchToggle = document.getElementById('searchToggle');
+    const homeNav = document.getElementById('homeNav');
+    bottomSearchNav?.addEventListener('click', () => {
+      if (!homeNav?.classList.contains('active')) homeNav?.click();
+      window.requestAnimationFrame(() => searchToggle?.click());
+    });
+
+    const profileToggle = document.getElementById('profileToggle');
+    const profileOverlay = document.getElementById('profileOverlay');
+    const profileDrawer = document.getElementById('profileDrawer');
+    const profileClose = document.getElementById('profileClose');
+    const profileLanguages = [...document.querySelectorAll('[data-profile-language]')];
+
+    function setProfileOpen(open) {
+      profileOverlay?.classList.toggle('show', open);
+      profileDrawer?.classList.toggle('show', open);
+      profileDrawer?.setAttribute('aria-hidden', String(!open));
+      profileToggle?.setAttribute('aria-expanded', String(open));
+    }
+
+    profileToggle?.addEventListener('click', () => setProfileOpen(true));
+    profileClose?.addEventListener('click', () => setProfileOpen(false));
+    profileOverlay?.addEventListener('click', () => setProfileOpen(false));
+    profileLanguages.forEach(button => button.addEventListener('click', () => {
+      const language = button.dataset.profileLanguage;
+      document.querySelector(`.language-option[data-language="${language}"]`)?.click();
+      profileLanguages.forEach(item => item.classList.toggle('active', item === button));
+    }));
+
+    const billRequestsNav = document.getElementById('billRequestsNav');
+    const billPanelOverlay = document.getElementById('billPanelOverlay');
+    const billPanel = document.getElementById('billPanel');
+    const billPanelClose = document.getElementById('billPanelClose');
+
+    function setBillPanelOpen(open) {
+      billPanelOverlay?.classList.toggle('show', open);
+      billPanel?.classList.toggle('show', open);
+      billPanel?.setAttribute('aria-hidden', String(!open));
+    }
+
+    billRequestsNav?.addEventListener('click', () => setBillPanelOpen(true));
+    billPanelClose?.addEventListener('click', () => setBillPanelOpen(false));
+    billPanelOverlay?.addEventListener('click', () => setBillPanelOpen(false));
+    document.querySelectorAll('.bill-open').forEach(button => button.addEventListener('click', () => setBillPanelOpen(false)));
+
+    function syncCompactControls() {
+      if (!stateMenuWrap || !appShell) return;
+      stateMenuWrap.hidden = appShell.classList.contains('my-orders-mode') || appShell.classList.contains('order-builder-mode');
+    }
+
+    if (appShell) new MutationObserver(syncCompactControls).observe(appShell, { attributes: true, attributeFilter: ['class'] });
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      closeStateMenu();
+      setProfileOpen(false);
+      setBillPanelOpen(false);
+    });
+
+    syncStateMenu();
+    syncCompactControls();
+  })();
 </script>
 
 <script>

@@ -1,8 +1,9 @@
-const CACHE = 'qr-waiter-test-black-v10';
+const CACHE = 'qr-waiter-black-redesign-v11';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './e-waiter-logo.png',
   './icon-192.png',
   './icon-512.png'
 ];
