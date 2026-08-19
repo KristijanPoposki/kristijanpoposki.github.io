@@ -1,4 +1,4 @@
-const CACHE = 'qr-waiter-black-redesign-v11';
+const CACHE = 'qr-waiter-black-redesign-v12';
 const ASSETS = [
   './',
   './index.html',

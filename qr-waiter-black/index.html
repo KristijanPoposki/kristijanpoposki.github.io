@@ -5882,11 +5882,12 @@
     .bottom-nav .create-btn svg { width: 26px !important; height: 26px !important; }
     .bottom-nav .create-label { display: none !important; }
 
-    .bill-nav { position: relative; }
-    .bill-badge {
-      position: absolute;
-      top: 4px;
-      right: 3px;
+    .bottom-nav .bill-nav { position: relative !important; }
+    .bottom-nav .nav-btn > .bill-badge {
+      position: absolute !important;
+      top: 3px !important;
+      right: 3px !important;
+      z-index: 2 !important;
       min-width: 17px;
       height: 17px;
       padding: 0 4px;
