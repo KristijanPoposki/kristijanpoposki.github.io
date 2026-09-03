@@ -1,4 +1,4 @@
-const CACHE = 'qr-waiter-sidebar-functional-v21-glass';
+const CACHE = 'qr-waiter-sidebar-functional-v22-direct-glass';
 const ASSETS = [
   './',
   './index.html',

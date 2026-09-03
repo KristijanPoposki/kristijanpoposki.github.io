@@ -254,47 +254,42 @@ main{padding:0 14px 18px}
   width:min(calc(100% - 24px),500px);
   height:64px;
   padding:4px;
-  border:1px solid rgba(17,17,17,.12);
+  border:0;
   border-radius:32px;
-  background:rgba(255,255,255,.18);
-  box-shadow:
-    0 18px 42px rgba(0,0,0,.20),
-    0 5px 14px rgba(0,0,0,.10),
-    inset 0 0 0 1px rgba(255,255,255,.55),
-    inset 0 1px 0 rgba(255,255,255,.88);
+  background:transparent;
+  box-shadow:none;
   display:grid;
   grid-template-columns:repeat(5,1fr);
   align-items:center;
   isolation:isolate;
-  overflow:hidden;
+  overflow:visible;
 }
 .nav-glass-layer{
   position:absolute;
   inset:0;
   z-index:0;
-  border-radius:inherit;
-  background:
-    radial-gradient(circle at 18% 5%,rgba(255,255,255,.78),transparent 34%),
-    linear-gradient(115deg,rgba(255,255,255,.74),rgba(255,255,255,.58) 48%,rgba(238,238,238,.67));
-  backdrop-filter:blur(18px) saturate(145%);
-  -webkit-backdrop-filter:blur(18px) saturate(145%);
-  filter:url(#nav-glass-distortion);
-  -webkit-filter:url(#nav-glass-distortion);
+  width:100%;
+  height:100%;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:32px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  filter:url(#glass-distortion);
+  -webkit-filter:url(#glass-distortion);
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.20),
+    0 5px 14px rgba(0,0,0,.10),
+    inset 0 0 0 1px rgba(255,255,255,.55),
+    inset 0 1px 0 rgba(255,255,255,.88);
   pointer-events:none;
-}
-.nav-glass-layer::after{
-  content:"";
-  position:absolute;
-  inset:1px;
-  border-radius:inherit;
-  border:1px solid rgba(255,255,255,.62);
-  box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
 }
 .bottom-nav::after{
   content:"";
   position:absolute;
   inset:0;
   z-index:1;
+  border-radius:inherit;
   pointer-events:none;
   background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 38%,transparent 68%,rgba(0,0,0,.025));
 }
@@ -782,10 +777,9 @@ main{padding:0 14px 18px}
 <body>
 <svg class='nav-filter-defs' aria-hidden='true' focusable='false'>
   <defs>
-    <filter id='nav-glass-distortion' x='-12%' y='-30%' width='124%' height='160%' color-interpolation-filters='sRGB'>
-      <feTurbulence type='fractalNoise' baseFrequency='.012 .055' numOctaves='2' seed='17' result='navNoise'></feTurbulence>
-      <feGaussianBlur in='navNoise' stdDeviation='.35' result='softNoise'></feGaussianBlur>
-      <feDisplacementMap in='SourceGraphic' in2='softNoise' scale='5' xChannelSelector='R' yChannelSelector='B'></feDisplacementMap>
+    <filter id='glass-distortion' x='-12%' y='-30%' width='124%' height='160%' color-interpolation-filters='sRGB'>
+      <feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='2' seed='17' result='turbulence'></feTurbulence>
+      <feDisplacementMap in='SourceGraphic' in2='turbulence' scale='14' xChannelSelector='R' yChannelSelector='B'></feDisplacementMap>
     </filter>
   </defs>
 </svg>
